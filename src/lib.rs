@@ -4,6 +4,9 @@
 
 #![no_std]
 
+pub use eh0_2 as eh0_2;
+pub use eh1_0 as eh1_0;
+
 /// Compatibility container object.
 /// This is generic over different E-H types and will provide adaption
 /// depending on the bound type.
