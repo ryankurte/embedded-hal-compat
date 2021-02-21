@@ -1,0 +1,21 @@
+[package]
+name = "embedded-hal-compat"
+description = "Compatibility layer for interoperability between different embedded-hal versions"
+repository = "https://github.com/ryankurte/embedded-hal-compat"
+keywords = [ "embedded", "embedded-hal", "no-std", "compat", "compatibility" ]
+version = "0.1.0"
+authors = ["ryan <ryan@kurte.nz>"]
+edition = "2018"
+license = "MIT"
+
+
+[dependencies]
+
+[dependencies.eh0_2]
+package = "embedded-hal"
+version = "0.2.4"
+features = [ "unproven" ]
+
+[dependencies.eh1_0]
+package = "embedded-hal"
+version = "1.0.0-alpha.4"
