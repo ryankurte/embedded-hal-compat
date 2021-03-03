@@ -72,6 +72,23 @@ mod digital {
             self.inner.is_low()
         }
     }
+
+    impl<T, E> eh1_0::digital::OutputPin for Compat<T>
+    where
+        T: eh0_2::digital::v2::OutputPin<Error = E>,
+    {
+        type Error = E;
+
+        /// Set the output as high
+        fn try_set_high(&mut self) -> Result<(), Self::Error> {
+            self.inner.set_high()
+        }
+
+        /// Set the output as low
+        fn try_set_low(&mut self) -> Result<(), Self::Error> {
+            self.inner.set_low()
+        }
+    }
 }
 
 /// Delays (blocking)
