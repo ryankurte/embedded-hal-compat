@@ -184,7 +184,29 @@ mod spi {
             self.inner.write_iter(words)
         }
     }
+
+    impl <T, E> eh1_0::blocking::spi::Transactional<u8> for Compat<T>
+    where 
+    T: eh0_2::blocking::spi::Write<u8, Error=E> + eh0_2::blocking::spi::Transfer<u8, Error=E>
+    {
+        type Error = E;
+
+        fn try_exec<'a>(&mut self, operations: &mut [eh1_0::blocking::spi::Operation<'a, u8>]) -> Result<(), Self::Error>
+        {
+            use eh1_0::blocking::spi::Operation;
+
+            for op in operations {
+                match op {
+                    Operation::Write(w) => self.inner.write(w)?,
+                    Operation::Transfer(t) => self.inner.transfer(t).map(|_| ())?,
+                }
+            }
+
+            Ok(())
+        }
+    }
 }
+
 
 // I2C (blocking)
 mod i2c {
