@@ -2,7 +2,7 @@
 
 A _forward_ compatibility layer to smooth the transition between different versions of [embedded-hal](https://github.com/rust-embedded/embedded-hal) (specifically `0.2.x` and `1.0.0-alpha.X` series).
 
-This resolves the problem where a HAL implementation (ie. the implementation for your processor) is still published at `0.2.x`, and a driver expects `1.0.0-alpha.x`. In the opposite situation, please just fork and update the driver.
+This resolves the problem where a HAL implementation (ie. the implementation for your processor) is still published at `0.2.x`, and a driver expects `1.0.0-alpha.x`. In the opposite situation, please fork and update the driver.
 
 ## Status
 
