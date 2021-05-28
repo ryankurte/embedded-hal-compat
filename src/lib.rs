@@ -9,3 +9,6 @@ pub use eh1_0 as eh1_0;
 
 pub mod forward;
 pub mod reverse;
+
+pub use forward::ForwardCompat;
+pub use reverse::ReverseCompat;

@@ -10,11 +10,11 @@ pub struct Forward<T> {
 }
 
 /// Convert a type into a forward compatibility wrapper object
-pub trait ForwardForward<T> {
+pub trait ForwardCompat<T> {
     fn forward(self) -> Forward<T>;
 }
 
-impl <T> ForwardForward<T> for T {
+impl <T> ForwardCompat<T> for T {
     /// Create an e-h-c wrapper around and e-h object
     /// Available methods depend on the wrapped type
     fn forward(self) -> Forward<T> {
