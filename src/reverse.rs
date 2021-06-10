@@ -12,6 +12,7 @@ pub struct Reverse<T> {
 }
 
 /// Convert a type into a forward compatibility wrapper object
+/// call `.reverse()` on `e-h@1.0.x` types to create an `e-h@0.2.x` compatible wrapper object
 pub trait ReverseCompat<T> {
     fn reverse(self) -> Reverse<T>;
 }

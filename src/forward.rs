@@ -9,13 +9,14 @@ pub struct Forward<T> {
     inner: T,
 }
 
-/// Convert a type into a forward compatibility wrapper object
+/// Helper trait to convert a type for forward compatibility
+/// call `.forward()` on `e-h@0.2.x` types to create an `e-h@1.x.x` compatible wrapper object
 pub trait ForwardCompat<T> {
     fn forward(self) -> Forward<T>;
 }
 
 impl <T> ForwardCompat<T> for T {
-    /// Create an e-h-c wrapper around and e-h object
+    /// Create an e-h-c forward compatibility wrapper around and e-h object
     /// Available methods depend on the wrapped type
     fn forward(self) -> Forward<T> {
         Forward::new(self)
