@@ -4,6 +4,9 @@ A _forward_ compatibility layer to smooth the transition between different versi
 
 This resolves the problem where a HAL implementation (ie. the implementation for your processor) is still published at `0.2.x`, and a driver expects `1.0.0-alpha.x`. In the opposite situation, please fork and update the driver.
 
+This crate is intended to track `1.0.0-alpha` versions, and update to `1.0.0` on release, adaptation is not provided between `1.0.0-alpha.x` releases (though we _could_ do this if it was deemed worthwhile)
+
+
 ## Status
 
 [![GitHub tag](https://img.shields.io/github/tag/ryankurte/embedded-hal-compat.svg)](https://github.com/ryankurte/embedded-hal-compat)
@@ -11,13 +14,15 @@ This resolves the problem where a HAL implementation (ie. the implementation for
 [![Crates.io](https://img.shields.io/crates/v/embedded-hal-compat.svg)](https://crates.io/crates/embedded-hal-compat)
 [![Docs.rs](https://docs.rs/embedded-hal-compat/badge.svg)](https://docs.rs/embedded-hal-compat)
 
-Work in progress, `blocking` objects implemented, missing `nb` things as well as any reasonable documentation.
+Not all wrappers are fully implemented, feel free to open a PR if you come across something missing!
+
 
 #### How to use this:
 
 - Add `embedded-hal-compat` to your dependencies
-- Import with `use embedded_hal_compat::IntoCompat;`
-- Vicariously add `.compat()` on any `embedded-hal` outstanding type errors
+- Import with `use embedded_hal_compat::{ForwardCompat, ReverseCompat};`
+- Vicariously add `.forward()` or `.reverse()` on any `embedded-hal` type mismatches
+- See [docs.rs](https://docs.rs/embedded-hal-compat/latest/embedded_hal_compat/) for further documentation
 
 #### How do I know that I need this?
 
@@ -25,9 +30,10 @@ Type errors. Lots of type errors.
 
 (and `cargo tree -i embedded-hal` returns two versions)
 
+
 #### Is this cursed?!
 
-Yes. You're gonna end up with lots of cursed errors but at least you can compile things?
+At least a little bit, because traits have the same method names you might end up with some cursed errors...
 
 
 #### What kind of errors?
