@@ -50,13 +50,16 @@ pub use eh0_2 as eh0_2;
 /// Re-export of the linked embedded-hal `v1.0.x` version for convenience
 pub use eh1_0 as eh1_0;
 
-pub mod forward;
-pub mod reverse;
+mod forward;
+mod reverse;
 
-/// Forward compatibility wrapper trait, access using `.forward()`
-pub use forward::ForwardCompat;
-/// Reverse compatibility wrapper trait, access using `.reverse()`
-pub use reverse::ReverseCompat;
+
+// Forward compatibility wrapper trait, access using `.forward()`
+pub use forward::{Forward, ForwardCompat};
+
+// Reverse compatibility wrapper trait, access using `.reverse()`
+pub use reverse::{Reverse, ReverseCompat};
+
 
 /// Mock types for documentation, please ignore
 pub mod mock {
