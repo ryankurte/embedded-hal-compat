@@ -15,7 +15,7 @@ pub trait ForwardCompat<T> {
     fn forward(self) -> Forward<T>;
 }
 
-impl <T> ForwardCompat<T> for T {
+impl<T> ForwardCompat<T> for T {
     /// Create an e-h-c forward compatibility wrapper around and e-h object
     /// Available methods depend on the wrapped type
     fn forward(self) -> Forward<T> {
@@ -23,10 +23,10 @@ impl <T> ForwardCompat<T> for T {
     }
 }
 
-impl <T> Forward<T> {
+impl<T> Forward<T> {
     /// Create a new compatibility wrapper object
     pub fn new(inner: T) -> Forward<T> {
-        Forward{ inner }
+        Forward { inner }
     }
 
     /// Fetch a reference to the wrapped object
@@ -52,9 +52,9 @@ impl <T> Forward<T> {
 mod digital {
     use super::Forward;
 
-    impl <T, E> eh1_0::digital::blocking::InputPin for Forward<T>
-    where 
-        T: eh0_2::digital::v2::InputPin<Error=E>,
+    impl<T, E> eh1_0::digital::blocking::InputPin for Forward<T>
+    where
+        T: eh0_2::digital::v2::InputPin<Error = E>,
         E: core::fmt::Debug,
     {
         type Error = E;
@@ -91,12 +91,12 @@ mod digital {
 
 /// Delays (blocking)
 mod delay {
-    use core::convert::Infallible;
     use super::Forward;
+    use core::convert::Infallible;
 
-    impl <T> eh1_0::delay::blocking::DelayMs<u32> for Forward<T>
-    where 
-        T: eh0_2::blocking::delay::DelayMs<u32>
+    impl<T> eh1_0::delay::blocking::DelayMs<u32> for Forward<T>
+    where
+        T: eh0_2::blocking::delay::DelayMs<u32>,
     {
         type Error = Infallible;
 
@@ -106,9 +106,9 @@ mod delay {
         }
     }
 
-    impl <T> eh1_0::delay::blocking::DelayMs<u16> for Forward<T>
-    where 
-        T: eh0_2::blocking::delay::DelayMs<u16>
+    impl<T> eh1_0::delay::blocking::DelayMs<u16> for Forward<T>
+    where
+        T: eh0_2::blocking::delay::DelayMs<u16>,
     {
         type Error = Infallible;
 
@@ -118,8 +118,8 @@ mod delay {
         }
     }
 
-    impl <T> eh1_0::delay::blocking::DelayUs<u32> for Forward<T>
-    where 
+    impl<T> eh1_0::delay::blocking::DelayUs<u32> for Forward<T>
+    where
         T: eh0_2::blocking::delay::DelayUs<u32>,
     {
         type Error = Infallible;
@@ -130,8 +130,8 @@ mod delay {
         }
     }
 
-    impl <T> eh1_0::delay::blocking::DelayUs<u16> for Forward<T>
-    where 
+    impl<T> eh1_0::delay::blocking::DelayUs<u16> for Forward<T>
+    where
         T: eh0_2::blocking::delay::DelayUs<u16>,
     {
         type Error = Infallible;
@@ -147,9 +147,9 @@ mod delay {
 mod spi {
     use super::Forward;
 
-    impl <T, E> eh1_0::spi::blocking::Write<u8> for Forward<T>
+    impl<T, E> eh1_0::spi::blocking::Write<u8> for Forward<T>
     where
-        T: eh0_2::blocking::spi::Write<u8, Error=E>,
+        T: eh0_2::blocking::spi::Write<u8, Error = E>,
         E: core::fmt::Debug,
     {
         type Error = E;
@@ -159,43 +159,46 @@ mod spi {
         }
     }
 
-    impl <T, E> eh1_0::spi::blocking::Transfer<u8> for Forward<T>
+    impl<T, E> eh1_0::spi::blocking::Transfer<u8> for Forward<T>
     where
-        T: eh0_2::blocking::spi::Transfer<u8, Error=E>,
+        T: eh0_2::blocking::spi::Transfer<u8, Error = E>,
         E: core::fmt::Debug,
     {
         type Error = E;
 
-        fn transfer<'a>(&mut self, words: &'a mut [u8]) -> Result<(), Self::Error> {
+        fn transfer(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
             self.inner.transfer(words)?;
             Ok(())
         }
     }
 
-    impl <T, E> eh1_0::spi::blocking::WriteIter<u8> for Forward<T>
-    where 
-    T: eh0_2::blocking::spi::WriteIter<u8, Error=E>,
-    E: core::fmt::Debug,
+    impl<T, E> eh1_0::spi::blocking::WriteIter<u8> for Forward<T>
+    where
+        T: eh0_2::blocking::spi::WriteIter<u8, Error = E>,
+        E: core::fmt::Debug,
     {
         type Error = E;
 
         fn write_iter<WI>(&mut self, words: WI) -> Result<(), Self::Error>
         where
-            WI: IntoIterator<Item = u8> 
+            WI: IntoIterator<Item = u8>,
         {
             self.inner.write_iter(words)
         }
     }
 
-    impl <T, E> eh1_0::spi::blocking::Transactional<u8> for Forward<T>
-    where 
-    T: eh0_2::blocking::spi::Write<u8, Error=E> + eh0_2::blocking::spi::Transfer<u8, Error=E>,
-    E: core::fmt::Debug,
+    impl<T, E> eh1_0::spi::blocking::Transactional<u8> for Forward<T>
+    where
+        T: eh0_2::blocking::spi::Write<u8, Error = E>
+            + eh0_2::blocking::spi::Transfer<u8, Error = E>,
+        E: core::fmt::Debug,
     {
         type Error = E;
 
-        fn exec<'a>(&mut self, operations: &mut [eh1_0::spi::blocking::Operation<'a, u8>]) -> Result<(), Self::Error>
-        {
+        fn exec<'a>(
+            &mut self,
+            operations: &mut [eh1_0::spi::blocking::Operation<'a, u8>],
+        ) -> Result<(), Self::Error> {
             use eh1_0::spi::blocking::Operation;
 
             for op in operations {
@@ -210,16 +213,15 @@ mod spi {
     }
 }
 
-
 // I2C (blocking)
 mod i2c {
-    use eh1_0::i2c::SevenBitAddress;
     use super::Forward;
+    use eh1_0::i2c::SevenBitAddress;
 
-    impl <T, E> eh1_0::i2c::blocking::Read<SevenBitAddress> for Forward<T>
-    where 
-    T: eh0_2::blocking::i2c::Read<Error=E>,
-    E: core::fmt::Debug,
+    impl<T, E> eh1_0::i2c::blocking::Read<SevenBitAddress> for Forward<T>
+    where
+        T: eh0_2::blocking::i2c::Read<Error = E>,
+        E: core::fmt::Debug,
     {
         type Error = E;
 
@@ -228,10 +230,10 @@ mod i2c {
         }
     }
 
-    impl <T, E> eh1_0::i2c::blocking::Write<SevenBitAddress> for Forward<T>
-    where 
-    T: eh0_2::blocking::i2c::Write<Error=E>,
-    E: core::fmt::Debug,
+    impl<T, E> eh1_0::i2c::blocking::Write<SevenBitAddress> for Forward<T>
+    where
+        T: eh0_2::blocking::i2c::Write<Error = E>,
+        E: core::fmt::Debug,
     {
         type Error = E;
 
@@ -240,14 +242,14 @@ mod i2c {
         }
     }
 
-    impl <T, E> eh1_0::i2c::blocking::WriteIter<SevenBitAddress> for Forward<T>
-    where 
-    T: eh0_2::blocking::i2c::WriteIter<Error=E>,
-    E: core::fmt::Debug,
+    impl<T, E> eh1_0::i2c::blocking::WriteIter<SevenBitAddress> for Forward<T>
+    where
+        T: eh0_2::blocking::i2c::WriteIter<Error = E>,
+        E: core::fmt::Debug,
     {
         type Error = E;
 
-        fn write_iter<B>(&mut self, address: SevenBitAddress, words: B) -> Result<(), Self::Error> 
+        fn write_iter<B>(&mut self, address: SevenBitAddress, words: B) -> Result<(), Self::Error>
         where
             B: IntoIterator<Item = u8>,
         {
@@ -255,26 +257,36 @@ mod i2c {
         }
     }
 
-    impl <T, E> eh1_0::i2c::blocking::WriteRead<SevenBitAddress> for Forward<T>
-    where 
-    T: eh0_2::blocking::i2c::WriteRead<Error=E>,
-    E: core::fmt::Debug,
+    impl<T, E> eh1_0::i2c::blocking::WriteRead<SevenBitAddress> for Forward<T>
+    where
+        T: eh0_2::blocking::i2c::WriteRead<Error = E>,
+        E: core::fmt::Debug,
     {
         type Error = E;
 
-        fn write_read(&mut self, address: SevenBitAddress, bytes: &[u8], buffer: &mut [u8]) -> Result<(), Self::Error> {
+        fn write_read(
+            &mut self,
+            address: SevenBitAddress,
+            bytes: &[u8],
+            buffer: &mut [u8],
+        ) -> Result<(), Self::Error> {
             self.inner.write_read(address, bytes, buffer)
         }
     }
 
-    impl <T, E> eh1_0::i2c::blocking::WriteIterRead<SevenBitAddress> for Forward<T>
-    where 
-    T: eh0_2::blocking::i2c::WriteIterRead<Error=E>,
-    E: core::fmt::Debug,
+    impl<T, E> eh1_0::i2c::blocking::WriteIterRead<SevenBitAddress> for Forward<T>
+    where
+        T: eh0_2::blocking::i2c::WriteIterRead<Error = E>,
+        E: core::fmt::Debug,
     {
         type Error = E;
 
-        fn write_iter_read<B>(&mut self, address: SevenBitAddress, bytes: B, buffer: &mut [u8]) -> Result<(), Self::Error> 
+        fn write_iter_read<B>(
+            &mut self,
+            address: SevenBitAddress,
+            bytes: B,
+            buffer: &mut [u8],
+        ) -> Result<(), Self::Error>
         where
             B: IntoIterator<Item = u8>,
         {
@@ -287,9 +299,9 @@ mod i2c {
 mod serial {
     use super::Forward;
 
-    impl <T, E> eh1_0::serial::blocking::Write<u8> for Forward<T>
-    where 
-        T: eh0_2::blocking::serial::Write<u8, Error=E>,
+    impl<T, E> eh1_0::serial::blocking::Write<u8> for Forward<T>
+    where
+        T: eh0_2::blocking::serial::Write<u8, Error = E>,
         E: core::fmt::Debug,
     {
         type Error = E;
