@@ -97,27 +97,27 @@ mod delay {
 
     impl<T, E> eh0_2::blocking::delay::DelayMs<u32> for Reverse<T>
     where
-        T: eh1_0::delay::blocking::DelayMs<u32, Error = E>,
+        T: eh1_0::delay::blocking::DelayUs<Error = E>,
         E: Debug,
     {
         fn delay_ms(&mut self, ms: u32) {
-            self.inner.delay_ms(ms).unwrap();
+            self.inner.delay_us(ms * 1000).unwrap();
         }
     }
 
     impl<T, E> eh0_2::blocking::delay::DelayMs<u16> for Reverse<T>
     where
-        T: eh1_0::delay::blocking::DelayMs<u16, Error = E>,
+        T: eh1_0::delay::blocking::DelayUs<Error = E>,
         E: Debug,
     {
         fn delay_ms(&mut self, ms: u16) {
-            self.inner.delay_ms(ms).unwrap();
+            self.inner.delay_us(ms as u32 * 1000).unwrap();
         }
     }
 
     impl<T, E> eh0_2::blocking::delay::DelayUs<u32> for Reverse<T>
     where
-        T: eh1_0::delay::blocking::DelayUs<u32, Error = E>,
+        T: eh1_0::delay::blocking::DelayUs<Error = E>,
         E: Debug,
     {
         fn delay_us(&mut self, us: u32) {
@@ -127,17 +127,19 @@ mod delay {
 
     impl<T, E> eh0_2::blocking::delay::DelayUs<u16> for Reverse<T>
     where
-        T: eh1_0::delay::blocking::DelayUs<u16, Error = E>,
+        T: eh1_0::delay::blocking::DelayUs<Error = E>,
         E: Debug,
     {
         fn delay_us(&mut self, us: u16) {
-            self.inner.delay_us(us).unwrap();
+            self.inner.delay_us(us as u32).unwrap();
         }
     }
 }
 
 /// SPI (blocking)
 mod spi {
+    use eh1_0::spi::blocking::Operation;
+
     use super::{Debug, Reverse};
 
     impl<T, E> eh0_2::blocking::spi::Write<u8> for Reverse<T>
@@ -154,13 +156,13 @@ mod spi {
 
     impl<T, E> eh0_2::blocking::spi::Transfer<u8> for Reverse<T>
     where
-        T: eh1_0::spi::blocking::Transfer<u8, Error = E>,
+        T: eh1_0::spi::blocking::Transactional<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
 
         fn transfer<'a>(&mut self, words: &'a mut [u8]) -> Result<&'a [u8], Self::Error> {
-            self.inner.transfer(words)?;
+            self.inner.exec(&mut [Operation::TransferInplace(words)])?;
             Ok(words)
         }
     }

@@ -13,9 +13,9 @@ license = "MIT"
 
 [dependencies.eh0_2]
 package = "embedded-hal"
-version = "0.2.4"
+version = "0.2.6"
 features = [ "unproven" ]
 
 [dependencies.eh1_0]
 package = "embedded-hal"
-version = "=1.0.0-alpha.5"
+version = "=1.0.0-alpha.6"
