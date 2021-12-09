@@ -45,6 +45,12 @@ impl<T> Forward<T> {
     }
 }
 
+/// Fake error type for forward compatibility.
+///
+/// This fulfils error trait bounds but `.kind()` always returns `Other`
+#[derive(Debug, Clone, PartialEq)]
+pub struct ForwardError<E>(pub E);
+
 // note that implementations over Forward cannot be generic over word type
 // etc. due to orphan rules (ie. what happens if someone else defines a word type?)
 
@@ -94,31 +100,7 @@ mod delay {
     use super::Forward;
     use core::convert::Infallible;
 
-    impl<T> eh1_0::delay::blocking::DelayMs<u32> for Forward<T>
-    where
-        T: eh0_2::blocking::delay::DelayMs<u32>,
-    {
-        type Error = Infallible;
-
-        fn delay_ms(&mut self, ms: u32) -> Result<(), Self::Error> {
-            self.inner.delay_ms(ms);
-            Ok(())
-        }
-    }
-
-    impl<T> eh1_0::delay::blocking::DelayMs<u16> for Forward<T>
-    where
-        T: eh0_2::blocking::delay::DelayMs<u16>,
-    {
-        type Error = Infallible;
-
-        fn delay_ms(&mut self, ms: u16) -> Result<(), Self::Error> {
-            self.inner.delay_ms(ms);
-            Ok(())
-        }
-    }
-
-    impl<T> eh1_0::delay::blocking::DelayUs<u32> for Forward<T>
+    impl<T> eh1_0::delay::blocking::DelayUs for Forward<T>
     where
         T: eh0_2::blocking::delay::DelayUs<u32>,
     {
@@ -129,33 +111,27 @@ mod delay {
             Ok(())
         }
     }
-
-    impl<T> eh1_0::delay::blocking::DelayUs<u16> for Forward<T>
-    where
-        T: eh0_2::blocking::delay::DelayUs<u16>,
-    {
-        type Error = Infallible;
-
-        fn delay_us(&mut self, us: u16) -> Result<(), Self::Error> {
-            self.inner.delay_us(us);
-            Ok(())
-        }
-    }
 }
 
 /// SPI (blocking)
 mod spi {
-    use super::Forward;
+    use super::{Forward, ForwardError};
+
+    impl<E: core::fmt::Debug> eh1_0::spi::Error for ForwardError<E> {
+        fn kind(&self) -> eh1_0::spi::ErrorKind {
+            eh1_0::spi::ErrorKind::Other
+        }
+    }
 
     impl<T, E> eh1_0::spi::blocking::Write<u8> for Forward<T>
     where
         T: eh0_2::blocking::spi::Write<u8, Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
-            self.inner.write(words)
+            self.inner.write(words).map_err(ForwardError)
         }
     }
 
@@ -164,10 +140,12 @@ mod spi {
         T: eh0_2::blocking::spi::Transfer<u8, Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
-        fn transfer(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
-            self.inner.transfer(words)?;
+        fn transfer(&mut self, read: &mut [u8], write: &[u8]) -> Result<(), Self::Error> {
+            //self.inner.transfer(words).map_err(ForwardError)?;
+            read.copy_from_slice(&write[..read.len()]);
+            self.inner.transfer(read).map_err(ForwardError)?;
             Ok(())
         }
     }
@@ -177,13 +155,13 @@ mod spi {
         T: eh0_2::blocking::spi::WriteIter<u8, Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn write_iter<WI>(&mut self, words: WI) -> Result<(), Self::Error>
         where
             WI: IntoIterator<Item = u8>,
         {
-            self.inner.write_iter(words)
+            self.inner.write_iter(words).map_err(ForwardError)
         }
     }
 
@@ -193,7 +171,7 @@ mod spi {
             + eh0_2::blocking::spi::Transfer<u8, Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn exec<'a>(
             &mut self,
@@ -203,9 +181,17 @@ mod spi {
 
             for op in operations {
                 match op {
-                    Operation::Write(w) => self.inner.write(w)?,
-                    Operation::Transfer(t) => self.inner.transfer(t).map(|_| ())?,
+                    Operation::Write(w) => self.inner.write(w),
+                    Operation::TransferInplace(t) => self.inner.transfer(t).map(|_| ()),
+                    // Technically different behaviour to read but, it's the best we can do
+                    Operation::Read(r) => self.inner.transfer(r).map(|_| ()),
+                    Operation::Transfer(r, w) => {
+                        // Copy write to read buffer then use inner transfer
+                        r.copy_from_slice(&w[..r.len()]);
+                        self.inner.transfer(r).map(|_| ())
+                    }
                 }
+                .map_err(ForwardError)?;
             }
 
             Ok(())
@@ -215,18 +201,24 @@ mod spi {
 
 // I2C (blocking)
 mod i2c {
-    use super::Forward;
+    use super::{Forward, ForwardError};
     use eh1_0::i2c::SevenBitAddress;
+
+    impl<E: core::fmt::Debug> eh1_0::i2c::Error for ForwardError<E> {
+        fn kind(&self) -> eh1_0::i2c::ErrorKind {
+            eh1_0::i2c::ErrorKind::Other
+        }
+    }
 
     impl<T, E> eh1_0::i2c::blocking::Read<SevenBitAddress> for Forward<T>
     where
         T: eh0_2::blocking::i2c::Read<Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn read(&mut self, address: SevenBitAddress, words: &mut [u8]) -> Result<(), Self::Error> {
-            self.inner.read(address, words)
+            self.inner.read(address, words).map_err(ForwardError)
         }
     }
 
@@ -235,10 +227,10 @@ mod i2c {
         T: eh0_2::blocking::i2c::Write<Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn write(&mut self, address: SevenBitAddress, words: &[u8]) -> Result<(), Self::Error> {
-            self.inner.write(address, words)
+            self.inner.write(address, words).map_err(ForwardError)
         }
     }
 
@@ -247,13 +239,13 @@ mod i2c {
         T: eh0_2::blocking::i2c::WriteIter<Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn write_iter<B>(&mut self, address: SevenBitAddress, words: B) -> Result<(), Self::Error>
         where
             B: IntoIterator<Item = u8>,
         {
-            self.inner.write(address, words)
+            self.inner.write(address, words).map_err(ForwardError)
         }
     }
 
@@ -262,7 +254,7 @@ mod i2c {
         T: eh0_2::blocking::i2c::WriteRead<Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn write_read(
             &mut self,
@@ -270,7 +262,9 @@ mod i2c {
             bytes: &[u8],
             buffer: &mut [u8],
         ) -> Result<(), Self::Error> {
-            self.inner.write_read(address, bytes, buffer)
+            self.inner
+                .write_read(address, bytes, buffer)
+                .map_err(ForwardError)
         }
     }
 
@@ -279,7 +273,7 @@ mod i2c {
         T: eh0_2::blocking::i2c::WriteIterRead<Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn write_iter_read<B>(
             &mut self,
@@ -290,28 +284,36 @@ mod i2c {
         where
             B: IntoIterator<Item = u8>,
         {
-            self.inner.write_iter_read(address, bytes, buffer)
+            self.inner
+                .write_iter_read(address, bytes, buffer)
+                .map_err(ForwardError)
         }
     }
 }
 
 /// Serial (UART etc.)
 mod serial {
-    use super::Forward;
+    use super::{Forward, ForwardError};
+
+    impl<E: core::fmt::Debug> eh1_0::serial::Error for ForwardError<E> {
+        fn kind(&self) -> eh1_0::serial::ErrorKind {
+            eh1_0::serial::ErrorKind::Other
+        }
+    }
 
     impl<T, E> eh1_0::serial::blocking::Write<u8> for Forward<T>
     where
         T: eh0_2::blocking::serial::Write<u8, Error = E>,
         E: core::fmt::Debug,
     {
-        type Error = E;
+        type Error = ForwardError<E>;
 
         fn write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
-            self.inner.bwrite_all(words)
+            self.inner.bwrite_all(words).map_err(ForwardError)
         }
 
         fn flush(&mut self) -> Result<(), Self::Error> {
-            self.inner.bflush()
+            self.inner.bflush().map_err(ForwardError)
         }
     }
 }
