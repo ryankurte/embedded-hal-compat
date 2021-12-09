@@ -1,8 +1,8 @@
 # Embedded HAL Compatibility Layer
 
-A _forward_ compatibility layer to smooth the transition between different versions of [embedded-hal](https://github.com/rust-embedded/embedded-hal) (specifically `0.2.x` and `1.0.0-alpha.X` series).
+A compatibility layer to smooth the transition between different versions of [embedded-hal](https://github.com/rust-embedded/embedded-hal) (specifically `0.2.x` and `1.0.0-alpha.X` series).
 
-This resolves the problem where a HAL implementation (ie. the implementation for your processor) is still published at `0.2.x`, and a driver expects `1.0.0-alpha.x`. In the opposite situation, please fork and update the driver.
+This resolves the problem where a HAL implementation (ie. the implementation for your processor) and driver you intend to use are mismatched.
 
 This crate is intended to track `1.0.0-alpha` versions, and update to `1.0.0` on release, adaptation is not provided between `1.0.0-alpha.x` releases (though we _could_ do this if it was deemed worthwhile)
 
@@ -41,12 +41,12 @@ Type errors. Lots of type errors.
 
 #### Is this cursed?!
 
-At least a little bit, because traits have the same method names you might end up with some cursed errors...
+At least a little bit, because traits have the same method names you might end up with some cursed errors, and we have to pave over some differences around errors and error kinds...
 
 
 #### What kind of errors?
 
-Because you'll have symbols with the same name you'll end up with errors like:
+Because you're likely to have symbols with the same name you'll end up with errors like:
 
 ```
 error[E0599]: no method named `delay_ms` found for mutable reference `&mut Compat<atsamd_hal::delay::Delay>` in the current scope
