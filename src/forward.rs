@@ -144,7 +144,9 @@ mod spi {
 
         fn transfer(&mut self, read: &mut [u8], write: &[u8]) -> Result<(), Self::Error> {
             //self.inner.transfer(words).map_err(ForwardError)?;
-            todo!("Unsupported by e-h 1.0.0-alpha.6")
+            read.copy_from_slice(&write[..read.len()]);
+            self.inner.transfer(read).map_err(ForwardError)?;
+            Ok(())
         }
     }
 
@@ -183,8 +185,11 @@ mod spi {
                     Operation::TransferInplace(t) => self.inner.transfer(t).map(|_| ()),
                     // Technically different behaviour to read but, it's the best we can do
                     Operation::Read(r) => self.inner.transfer(r).map(|_| ()),
-
-                    Operation::Transfer(_w, _r) => panic!("Unsupported by e-h 1.0.0-alpha.6"),
+                    Operation::Transfer(r, w) => {
+                        // Copy write to read buffer then use inner transfer
+                        r.copy_from_slice(&w[..r.len()]);
+                        self.inner.transfer(r).map(|_| ())
+                    }
                 }
                 .map_err(ForwardError)?;
             }
