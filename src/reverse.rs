@@ -190,7 +190,7 @@ mod i2c {
 
     impl<T, E> eh0_2::blocking::i2c::Read for Reverse<T>
     where
-        T: eh1_0::i2c::blocking::Read<SevenBitAddress, Error = E>,
+        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -202,7 +202,7 @@ mod i2c {
 
     impl<T, E> eh0_2::blocking::i2c::Write for Reverse<T>
     where
-        T: eh1_0::i2c::blocking::Write<SevenBitAddress, Error = E>,
+        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -214,7 +214,7 @@ mod i2c {
 
     impl<T, E> eh0_2::blocking::i2c::WriteIter for Reverse<T>
     where
-        T: eh1_0::i2c::blocking::WriteIter<SevenBitAddress, Error = E>,
+        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -229,7 +229,7 @@ mod i2c {
 
     impl<T, E> eh0_2::blocking::i2c::WriteRead for Reverse<T>
     where
-        T: eh1_0::i2c::blocking::WriteRead<SevenBitAddress, Error = E>,
+        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -246,7 +246,7 @@ mod i2c {
 
     impl<T, E> eh0_2::blocking::i2c::WriteIterRead for Reverse<T>
     where
-        T: eh1_0::i2c::blocking::WriteIterRead<SevenBitAddress, Error = E>,
+        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
         E: Debug,
     {
         type Error = E;

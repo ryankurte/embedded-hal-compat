@@ -80,9 +80,11 @@ pub mod mock {
 
     pub struct OutputPin1_0;
 
-    impl eh1_0::digital::blocking::OutputPin for OutputPin1_0 {
+    impl eh1_0::digital::ErrorType for OutputPin1_0 {
         type Error = Infallible;
+    }
 
+    impl eh1_0::digital::blocking::OutputPin for OutputPin1_0 {
         /// Set the output as high
         fn set_high(&mut self) -> Result<(), Self::Error> {
             Ok(())
