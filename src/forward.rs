@@ -49,6 +49,7 @@ impl<T> Forward<T> {
 ///
 /// This fulfils error trait bounds but `.kind()` always returns `Other`
 #[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub struct ForwardError<E>(pub E);
 
 // note that implementations over Forward cannot be generic over word type
