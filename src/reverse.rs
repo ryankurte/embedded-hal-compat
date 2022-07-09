@@ -138,13 +138,11 @@ mod delay {
 
 /// SPI (blocking)
 mod spi {
-    use eh1_0::spi::blocking::Operation;
-
     use super::{Debug, Reverse};
 
     impl<T, E> eh0_2::blocking::spi::Write<u8> for Reverse<T>
     where
-        T: eh1_0::spi::blocking::Write<u8, Error = E>,
+        T: eh1_0::spi::blocking::SpiBusWrite<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -156,20 +154,20 @@ mod spi {
 
     impl<T, E> eh0_2::blocking::spi::Transfer<u8> for Reverse<T>
     where
-        T: eh1_0::spi::blocking::Transactional<u8, Error = E>,
+        T: eh1_0::spi::blocking::SpiBus<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
 
         fn transfer<'a>(&mut self, words: &'a mut [u8]) -> Result<&'a [u8], Self::Error> {
-            self.inner.exec(&mut [Operation::TransferInplace(words)])?;
+            self.inner.transfer_in_place(words)?;
             Ok(words)
         }
     }
 
     impl<T, E> eh0_2::blocking::spi::WriteIter<u8> for Reverse<T>
     where
-        T: eh1_0::spi::blocking::WriteIter<u8, Error = E>,
+        T: eh1_0::spi::blocking::SpiBusWrite<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -178,7 +176,10 @@ mod spi {
         where
             WI: IntoIterator<Item = u8>,
         {
-            self.inner.write_iter(words)
+            for word in words.into_iter() {
+                self.inner.write(&[word])?;
+            }
+            Ok(())
         }
     }
 }
