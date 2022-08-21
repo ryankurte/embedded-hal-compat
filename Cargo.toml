@@ -17,9 +17,9 @@ defmt = { version = "0.3.0", optional = true }
 
 [dependencies.eh0_2]
 package = "embedded-hal"
-version = "0.2.6"
+version = "0.2.7"
 features = [ "unproven" ]
 
 [dependencies.eh1_0]
 package = "embedded-hal"
-version = "=1.0.0-alpha.7"
+version = "=1.0.0-alpha.8"

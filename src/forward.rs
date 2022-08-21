@@ -136,7 +136,18 @@ mod spi {
         type Error = ForwardError<E>;
     }
 
-    impl<T, E> eh1_0::spi::blocking::Write<u8> for Forward<T>
+    impl<T, E> eh1_0::spi::blocking::SpiBusFlush for Forward<T>
+    where
+        T: eh0_2::blocking::spi::Write<u8, Error = E>,
+        E: core::fmt::Debug,
+    {
+        fn flush(&mut self) -> Result<(), Self::Error> {
+            // TODO: This API doesn't exist in 0.2.7
+            Ok(())
+        }
+    }
+
+    impl<T, E> eh1_0::spi::blocking::SpiBusWrite<u8> for Forward<T>
     where
         T: eh0_2::blocking::spi::Write<u8, Error = E>,
         E: core::fmt::Debug,
@@ -146,11 +157,29 @@ mod spi {
         }
     }
 
-    impl<T, E> eh1_0::spi::blocking::Transfer<u8> for Forward<T>
+    impl<T, E, F> eh1_0::spi::blocking::SpiBusRead<u8> for Forward<T>
+    where
+        T: eh0_2::spi::FullDuplex<u8, Error = F> + eh0_2::blocking::spi::Write<u8, Error = E>,
+        E: core::fmt::Debug,
+        ForwardError<E>: From<ForwardError<eh1_0::nb::Error<F>>>,
+    {
+        fn read(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
+            for word in words.iter_mut() {
+                // Send out empty bytes to read reply
+                self.inner.send(0u8).map_err(ForwardError)?;
+                *word = self.inner.read().map_err(ForwardError)?;
+            }
+            Ok(())
+        }
+    }
+
+    impl<T, E, F> eh1_0::spi::blocking::SpiBus<u8> for Forward<T>
     where
         T: eh0_2::blocking::spi::Write<u8, Error = E>
-            + eh0_2::blocking::spi::Transfer<u8, Error = E>,
+            + eh0_2::blocking::spi::Transfer<u8, Error = E>
+            + eh0_2::spi::FullDuplex<u8, Error = F>,
         E: core::fmt::Debug,
+        ForwardError<E>: From<ForwardError<eh1_0::nb::Error<F>>>,
     {
         fn transfer(&mut self, read: &mut [u8], write: &[u8]) -> Result<(), Self::Error> {
             //self.inner.transfer(words).map_err(ForwardError)?;
@@ -158,49 +187,12 @@ mod spi {
             self.inner.transfer(read).map_err(ForwardError)?;
             Ok(())
         }
-    }
 
-    impl<T, E> eh1_0::spi::blocking::WriteIter<u8> for Forward<T>
-    where
-        T: eh0_2::blocking::spi::Write<u8, Error = E>
-            + eh0_2::blocking::spi::WriteIter<u8, Error = E>,
-        E: core::fmt::Debug,
-    {
-        fn write_iter<WI>(&mut self, words: WI) -> Result<(), Self::Error>
-        where
-            WI: IntoIterator<Item = u8>,
-        {
-            self.inner.write_iter(words).map_err(ForwardError)
-        }
-    }
-
-    impl<T, E> eh1_0::spi::blocking::Transactional<u8> for Forward<T>
-    where
-        T: eh0_2::blocking::spi::Write<u8, Error = E>
-            + eh0_2::blocking::spi::Transfer<u8, Error = E>,
-        E: core::fmt::Debug,
-    {
-        fn exec<'a>(
-            &mut self,
-            operations: &mut [eh1_0::spi::blocking::Operation<'a, u8>],
-        ) -> Result<(), Self::Error> {
-            use eh1_0::spi::blocking::Operation;
-
-            for op in operations {
-                match op {
-                    Operation::Write(w) => self.inner.write(w),
-                    Operation::TransferInplace(t) => self.inner.transfer(t).map(|_| ()),
-                    // Technically different behaviour to read but, it's the best we can do
-                    Operation::Read(r) => self.inner.transfer(r).map(|_| ()),
-                    Operation::Transfer(r, w) => {
-                        // Copy write to read buffer then use inner transfer
-                        r.copy_from_slice(&w[..r.len()]);
-                        self.inner.transfer(r).map(|_| ())
-                    }
-                }
-                .map_err(ForwardError)?;
+        fn transfer_in_place(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
+            for word in words.iter_mut() {
+                self.inner.send(*word).map_err(ForwardError)?;
+                *word = self.inner.read().map_err(ForwardError)?;
             }
-
             Ok(())
         }
     }
