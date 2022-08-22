@@ -2,13 +2,21 @@
 // Copyright 2021 Ryan Kurte
 //!
 //! A compatibility layer to alleviate (some) of the issues resolving from changes to embedded-hal.
-//! This crate lets you _easily_ mix and match drivers and hal implementations using `v1.x.x` and `v0.2.x` versions of embedded-hal, just add a `.forward()` or a `.reverse()` wherever you see trait bounds errors.
+//! This crate lets you _easily_ mix and match drivers and hal implementations using `v1.x.x` and
+//! `v0.2.x` versions of embedded-hal, just add a `.forward()` or a `.reverse()` wherever you see
+//! trait bounds errors.
 //!
-//! Note that no effort is made to support interoperability between alpha versions, we'll do our best to keep
-//! up with the latest alpha and swap to `1.0.0` on release. In the future these traits may be renamed to support more hal versions.
+//! Note that no effort is made to support interoperability between alpha versions, we'll do our
+//! best to keep up with the latest alpha and swap to `1.0.0` on release. In the future these
+//! traits may be renamed to support more hal versions.
+//!
 //!
 //! ## Forward compatibility:
-//! Calling `ForwardCompat::forward()` (or `.forward()`) on `v0.2.x` types creates a wrapper for use with `v1.0.x` consumers, so you can drop these wrapped types into drivers expecting `v1.0.x` types.
+//!
+//! Calling `ForwardCompat::forward()` (or `.forward()`) on `v0.2.x` types creates a wrapper for
+//! use with `v1.0.x` consumers, so you can drop these wrapped types into drivers expecting
+//! `v1.0.x` types.
+//!
 //!```
 //! # use embedded_hal_compat::mock::OutputPin0_2;
 //! use embedded_hal_compat::ForwardCompat;
@@ -24,8 +32,13 @@
 //! let _ = eh1_0::digital::blocking::OutputPin::set_high(&mut new);
 //!```
 //!
+//!
 //! ## Backwards compatibility:
-//! Calling `ReverseCompat::reverse()` (or `.reverse()`) on `v1.0.x` types creates a wrapper for use with `v0.2.x` consumers, so you can drop these wrapped types into drivers expecting `v0.2.x` types.
+//!
+//! Calling `ReverseCompat::reverse()` (or `.reverse()`) on `v1.0.x` types creates a wrapper for
+//! use with `v0.2.x` consumers, so you can drop these wrapped types into drivers expecting
+//! `v0.2.x` types.
+//!
 //!```
 //! # use embedded_hal_compat::mock::OutputPin1_0;
 //! use embedded_hal_compat::ReverseCompat;
@@ -64,6 +77,10 @@ pub mod mock {
 
     pub struct OutputPin0_2;
 
+    impl eh1_0::digital::ErrorType for OutputPin0_2 {
+        type Error = Infallible;
+    }
+
     impl eh0_2::digital::v2::OutputPin for OutputPin0_2 {
         type Error = Infallible;
 
@@ -75,6 +92,20 @@ pub mod mock {
         /// Set the output as low
         fn set_low(&mut self) -> Result<(), Self::Error> {
             Ok(())
+        }
+    }
+
+    impl eh0_2::digital::v2::InputPin for OutputPin0_2 {
+        type Error = Infallible;
+
+        /// Set the output as high
+        fn is_high(&self) -> Result<bool, Self::Error> {
+            Ok(true)
+        }
+
+        /// Set the output as low
+        fn is_low(&self) -> Result<bool, Self::Error> {
+            Ok(false)
         }
     }
 
