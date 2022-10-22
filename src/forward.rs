@@ -146,6 +146,18 @@ mod spi {
         }
     }
 
+    impl<T, E> eh1_0::spi::blocking::TransferInplace<u8> for Forward<T>
+    where
+        T: eh0_2::blocking::spi::Write<u8, Error = E>
+            + eh0_2::blocking::spi::Transfer<u8, Error = E>,
+        E: core::fmt::Debug,
+    {
+        fn transfer_inplace(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
+            self.inner.transfer(words).map_err(ForwardError)?;
+            Ok(())
+        }
+    }
+
     impl<T, E> eh1_0::spi::blocking::Transfer<u8> for Forward<T>
     where
         T: eh0_2::blocking::spi::Write<u8, Error = E>
