@@ -29,7 +29,7 @@
 //! // Apply forward compatibility wrapper
 //! let mut new = old.forward();
 //! // Access via e-h v1.x.x methods
-//! let _ = eh1_0::digital::blocking::OutputPin::set_high(&mut new);
+//! let _ = eh1_0::digital::OutputPin::set_high(&mut new);
 //!```
 //!
 //!
@@ -46,7 +46,7 @@
 //! // Create e-h v1.x.x based type (mock)
 //! let mut new = OutputPin1_0;
 //! // Access via e-h v1.x.x methods
-//! let _ = eh1_0::digital::blocking::OutputPin::set_high(&mut new);
+//! let _ = eh1_0::digital::OutputPin::set_high(&mut new);
 //!
 //! // Apply backwards compatibility wrapper
 //! let mut old = new.reverse();
@@ -115,7 +115,7 @@ pub mod mock {
         type Error = Infallible;
     }
 
-    impl eh1_0::digital::blocking::OutputPin for OutputPin1_0 {
+    impl eh1_0::digital::OutputPin for OutputPin1_0 {
         /// Set the output as high
         fn set_high(&mut self) -> Result<(), Self::Error> {
             Ok(())
