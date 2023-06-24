@@ -67,4 +67,3 @@ warning: unused import: `embedded_hal::blocking::delay::DelayMs`
 Suggesting you're missing an import that's obviously there, because you have the `0.2.x` imports not the `1.0.0-alpha.x` imports, and the method is called `try_delay_ms` in the updated HAL (a fairly common renaming).
 
 You can fix this by importing the correct trait with something like: `use embedded_hal_compat::eh1_0::blocking::delay::{DelayMs as _};` (this must be renamed with `as` / you can't use the prelude because the names overlap), and by swapping the method to use the correct `try_` name.
-

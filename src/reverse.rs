@@ -56,7 +56,7 @@ mod digital {
 
     impl<T, E> eh0_2::digital::v2::InputPin for Reverse<T>
     where
-        T: eh1_0::digital::blocking::InputPin<Error = E>,
+        T: eh1_0::digital::InputPin<Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -74,7 +74,7 @@ mod digital {
 
     impl<T, E> eh0_2::digital::v2::OutputPin for Reverse<T>
     where
-        T: eh1_0::digital::blocking::OutputPin<Error = E>,
+        T: eh1_0::digital::OutputPin<Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -93,45 +93,41 @@ mod digital {
 
 /// Delays (blocking)
 mod delay {
-    use super::{Debug, Reverse};
+    use super::Reverse;
 
-    impl<T, E> eh0_2::blocking::delay::DelayMs<u32> for Reverse<T>
+    impl<T> eh0_2::blocking::delay::DelayMs<u32> for Reverse<T>
     where
-        T: eh1_0::delay::blocking::DelayUs<Error = E>,
-        E: Debug,
+        T: eh1_0::delay::DelayUs,
     {
         fn delay_ms(&mut self, ms: u32) {
-            self.inner.delay_us(ms * 1000).unwrap();
+            self.inner.delay_us(ms * 1000)
         }
     }
 
-    impl<T, E> eh0_2::blocking::delay::DelayMs<u16> for Reverse<T>
+    impl<T> eh0_2::blocking::delay::DelayMs<u16> for Reverse<T>
     where
-        T: eh1_0::delay::blocking::DelayUs<Error = E>,
-        E: Debug,
+        T: eh1_0::delay::DelayUs,
     {
         fn delay_ms(&mut self, ms: u16) {
-            self.inner.delay_us(ms as u32 * 1000).unwrap();
+            self.inner.delay_us(ms as u32 * 1000)
         }
     }
 
-    impl<T, E> eh0_2::blocking::delay::DelayUs<u32> for Reverse<T>
+    impl<T> eh0_2::blocking::delay::DelayUs<u32> for Reverse<T>
     where
-        T: eh1_0::delay::blocking::DelayUs<Error = E>,
-        E: Debug,
+        T: eh1_0::delay::DelayUs,
     {
         fn delay_us(&mut self, us: u32) {
-            self.inner.delay_us(us).unwrap();
+            self.inner.delay_us(us)
         }
     }
 
-    impl<T, E> eh0_2::blocking::delay::DelayUs<u16> for Reverse<T>
+    impl<T> eh0_2::blocking::delay::DelayUs<u16> for Reverse<T>
     where
-        T: eh1_0::delay::blocking::DelayUs<Error = E>,
-        E: Debug,
+        T: eh1_0::delay::DelayUs,
     {
         fn delay_us(&mut self, us: u16) {
-            self.inner.delay_us(us as u32).unwrap();
+            self.inner.delay_us(us as u32)
         }
     }
 }
@@ -142,7 +138,7 @@ mod spi {
 
     impl<T, E> eh0_2::blocking::spi::Write<u8> for Reverse<T>
     where
-        T: eh1_0::spi::blocking::SpiBusWrite<u8, Error = E>,
+        T: eh1_0::spi::SpiBusWrite<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -154,7 +150,7 @@ mod spi {
 
     impl<T, E> eh0_2::blocking::spi::Transfer<u8> for Reverse<T>
     where
-        T: eh1_0::spi::blocking::SpiBus<u8, Error = E>,
+        T: eh1_0::spi::SpiBus<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -167,7 +163,7 @@ mod spi {
 
     impl<T, E> eh0_2::blocking::spi::WriteIter<u8> for Reverse<T>
     where
-        T: eh1_0::spi::blocking::SpiBusWrite<u8, Error = E>,
+        T: eh1_0::spi::SpiBusWrite<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -191,7 +187,7 @@ mod i2c {
 
     impl<T, E> eh0_2::blocking::i2c::Read for Reverse<T>
     where
-        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
+        T: eh1_0::i2c::I2c<SevenBitAddress, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -203,7 +199,7 @@ mod i2c {
 
     impl<T, E> eh0_2::blocking::i2c::Write for Reverse<T>
     where
-        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
+        T: eh1_0::i2c::I2c<SevenBitAddress, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -213,24 +209,9 @@ mod i2c {
         }
     }
 
-    impl<T, E> eh0_2::blocking::i2c::WriteIter for Reverse<T>
-    where
-        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
-        E: Debug,
-    {
-        type Error = E;
-
-        fn write<B>(&mut self, address: SevenBitAddress, words: B) -> Result<(), Self::Error>
-        where
-            B: IntoIterator<Item = u8>,
-        {
-            self.inner.write_iter(address, words)
-        }
-    }
-
     impl<T, E> eh0_2::blocking::i2c::WriteRead for Reverse<T>
     where
-        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
+        T: eh1_0::i2c::I2c<SevenBitAddress, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -244,26 +225,6 @@ mod i2c {
             self.inner.write_read(address, bytes, buffer)
         }
     }
-
-    impl<T, E> eh0_2::blocking::i2c::WriteIterRead for Reverse<T>
-    where
-        T: eh1_0::i2c::blocking::I2c<SevenBitAddress, Error = E>,
-        E: Debug,
-    {
-        type Error = E;
-
-        fn write_iter_read<B>(
-            &mut self,
-            address: SevenBitAddress,
-            bytes: B,
-            buffer: &mut [u8],
-        ) -> Result<(), Self::Error>
-        where
-            B: IntoIterator<Item = u8>,
-        {
-            self.inner.write_iter_read(address, bytes, buffer)
-        }
-    }
 }
 
 /// Serial (UART etc.)
@@ -272,7 +233,7 @@ mod serial {
 
     impl<T, E> eh0_2::blocking::serial::Write<u8> for Reverse<T>
     where
-        T: eh1_0::serial::blocking::Write<u8, Error = E>,
+        T: eh1_0::serial::Write<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
