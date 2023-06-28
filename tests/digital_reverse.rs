@@ -11,13 +11,13 @@ impl eh1_0::digital::Error for PinError {
     }
 }
 
-struct Pin0;
+struct Peripheral;
 
-impl eh1_0::digital::ErrorType for Pin0 {
+impl eh1_0::digital::ErrorType for Peripheral {
     type Error = PinError;
 }
 
-impl eh1_0::digital::OutputPin for Pin0 {
+impl eh1_0::digital::OutputPin for Peripheral {
     fn set_high(&mut self) -> Result<(), Self::Error> {
         Ok(())
     }
@@ -26,7 +26,7 @@ impl eh1_0::digital::OutputPin for Pin0 {
     }
 }
 
-impl eh1_0::digital::InputPin for Pin0 {
+impl eh1_0::digital::InputPin for Peripheral {
     fn is_high(&self) -> Result<bool, Self::Error> {
         Ok(true)
     }
@@ -37,8 +37,8 @@ impl eh1_0::digital::InputPin for Pin0 {
 
 #[test]
 fn can_reverse() {
-    let p_1_0 = Pin0;
-    let mut p_0_2 = p_1_0.reverse();
-    assert!(eh0_2::digital::v2::OutputPin::set_high(&mut p_0_2).is_ok());
-    assert!(eh0_2::digital::v2::InputPin::is_high(&p_0_2).unwrap());
+    let periph_1_0 = Peripheral;
+    let mut periph_0_2 = periph_1_0.reverse();
+    assert!(eh0_2::digital::v2::OutputPin::set_high(&mut periph_0_2).is_ok());
+    assert!(eh0_2::digital::v2::InputPin::is_high(&periph_0_2).unwrap());
 }

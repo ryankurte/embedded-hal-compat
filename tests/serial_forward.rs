@@ -37,8 +37,8 @@ impl eh0_2::serial::Write<u8> for Peripheral {
 
 #[test]
 fn can_forward() {
-    let p_0_2 = Peripheral;
-    let mut p_1_0 = p_0_2.forward();
-    assert!(eh1_0::serial::Write::write(&mut p_1_0, &[0]).is_ok());
-    assert!(eh1_0::serial::Write::flush(&mut p_1_0).is_ok());
+    let periph_0_2 = Peripheral;
+    let mut periph_1_0 = periph_0_2.forward();
+    assert!(eh1_0::serial::Write::write(&mut periph_1_0, &[0]).is_ok());
+    assert!(eh1_0::serial::Write::flush(&mut periph_1_0).is_ok());
 }

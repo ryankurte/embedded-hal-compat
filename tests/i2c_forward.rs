@@ -11,23 +11,23 @@ impl eh1_0::i2c::Error for ImplError {
     }
 }
 
-struct I2c0;
+struct Peripheral;
 
-impl eh0_2::blocking::i2c::Write for I2c0 {
+impl eh0_2::blocking::i2c::Write for Peripheral {
     type Error = ImplError;
     fn write(&mut self, _address: u8, _bytes: &[u8]) -> Result<(), Self::Error> {
         Ok(())
     }
 }
 
-impl eh0_2::blocking::i2c::Read for I2c0 {
+impl eh0_2::blocking::i2c::Read for Peripheral {
     type Error = ImplError;
     fn read(&mut self, _address: u8, _buffer: &mut [u8]) -> Result<(), Self::Error> {
         Ok(())
     }
 }
 
-impl eh0_2::blocking::i2c::WriteRead for I2c0 {
+impl eh0_2::blocking::i2c::WriteRead for Peripheral {
     type Error = ImplError;
     fn write_read(
         &mut self,
@@ -39,7 +39,7 @@ impl eh0_2::blocking::i2c::WriteRead for I2c0 {
     }
 }
 
-impl eh0_2::blocking::i2c::WriteIter for I2c0 {
+impl eh0_2::blocking::i2c::WriteIter for Peripheral {
     type Error = ImplError;
     fn write<B>(&mut self, _address: u8, _bytes: B) -> Result<(), Self::Error>
     where
@@ -49,7 +49,7 @@ impl eh0_2::blocking::i2c::WriteIter for I2c0 {
     }
 }
 
-impl eh0_2::blocking::i2c::WriteIterRead for I2c0 {
+impl eh0_2::blocking::i2c::WriteIterRead for Peripheral {
     type Error = ImplError;
     fn write_iter_read<B>(
         &mut self,
@@ -64,7 +64,7 @@ impl eh0_2::blocking::i2c::WriteIterRead for I2c0 {
     }
 }
 
-impl eh0_2::blocking::i2c::Transactional for I2c0 {
+impl eh0_2::blocking::i2c::Transactional for Peripheral {
     type Error = ImplError;
     fn exec(
         &mut self,
@@ -75,7 +75,7 @@ impl eh0_2::blocking::i2c::Transactional for I2c0 {
     }
 }
 
-impl eh0_2::blocking::i2c::TransactionalIter for I2c0 {
+impl eh0_2::blocking::i2c::TransactionalIter for Peripheral {
     type Error = ImplError;
     fn exec_iter<'a, O>(&mut self, _address: u8, _operations: O) -> Result<(), Self::Error>
     where
@@ -88,10 +88,10 @@ impl eh0_2::blocking::i2c::TransactionalIter for I2c0 {
 #[test]
 fn can_forward() {
     let mut data = [];
-    let i2c_0_2 = I2c0;
-    let mut i2c_1_0 = i2c_0_2.forward();
-    assert!(eh1_0::i2c::I2c::write(&mut i2c_1_0, 0, &[]).is_ok());
-    assert!(eh1_0::i2c::I2c::write_read(&mut i2c_1_0, 0, &[], &mut data).is_ok());
-    assert!(eh1_0::i2c::I2c::read(&mut i2c_1_0, 0, &mut data).is_ok());
-    assert!(eh1_0::i2c::I2c::transaction(&mut i2c_1_0, 0, &mut []).is_ok());
+    let periph_0_2 = Peripheral;
+    let mut periph_1_0 = periph_0_2.forward();
+    assert!(eh1_0::i2c::I2c::write(&mut periph_1_0, 0, &[]).is_ok());
+    assert!(eh1_0::i2c::I2c::write_read(&mut periph_1_0, 0, &[], &mut data).is_ok());
+    assert!(eh1_0::i2c::I2c::read(&mut periph_1_0, 0, &mut data).is_ok());
+    assert!(eh1_0::i2c::I2c::transaction(&mut periph_1_0, 0, &mut []).is_ok());
 }

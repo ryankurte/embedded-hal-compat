@@ -12,8 +12,8 @@ impl eh0_2::blocking::delay::DelayUs<u32> for Peripheral {
 
 #[test]
 fn can_forward() {
-    let p_0_2 = Peripheral;
-    let mut p_1_0 = p_0_2.forward();
-    eh1_0::delay::DelayUs::delay_ms(&mut p_1_0, 0);
-    eh1_0::delay::DelayUs::delay_ms(&mut p_1_0, 0);
+    let periph_0_2 = Peripheral;
+    let mut periph_1_0 = periph_0_2.forward();
+    eh1_0::delay::DelayUs::delay_ms(&mut periph_1_0, 0);
+    eh1_0::delay::DelayUs::delay_ms(&mut periph_1_0, 0);
 }

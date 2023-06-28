@@ -28,10 +28,10 @@ impl eh1_0::serial::Write<u8> for Peripheral {
 
 #[test]
 fn can_reverse() {
-    let p_1_0 = Peripheral;
-    let mut p_0_2 = p_1_0.reverse();
-    assert!(eh0_2::blocking::serial::Write::bflush(&mut p_0_2).is_ok());
-    assert!(eh0_2::blocking::serial::Write::bwrite_all(&mut p_0_2, &[]).is_ok());
-    assert!(eh0_2::serial::Write::write(&mut p_0_2, 0).is_ok());
-    assert!(eh0_2::serial::Write::flush(&mut p_0_2).is_ok());
+    let periph_1_0 = Peripheral;
+    let mut periph_0_2 = periph_1_0.reverse();
+    assert!(eh0_2::blocking::serial::Write::bflush(&mut periph_0_2).is_ok());
+    assert!(eh0_2::blocking::serial::Write::bwrite_all(&mut periph_0_2, &[]).is_ok());
+    assert!(eh0_2::serial::Write::write(&mut periph_0_2, 0).is_ok());
+    assert!(eh0_2::serial::Write::flush(&mut periph_0_2).is_ok());
 }

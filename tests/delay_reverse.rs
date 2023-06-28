@@ -9,8 +9,8 @@ impl eh1_0::delay::DelayUs for Peripheral {
 
 #[test]
 fn can_reverse() {
-    let p_1_0 = Peripheral;
-    let mut p_0_2 = p_1_0.reverse();
-    eh0_2::blocking::delay::DelayMs::delay_ms(&mut p_0_2, 0_u32);
-    eh0_2::blocking::delay::DelayUs::delay_us(&mut p_0_2, 0_u32);
+    let periph_1_0 = Peripheral;
+    let mut periph_0_2 = periph_1_0.reverse();
+    eh0_2::blocking::delay::DelayMs::delay_ms(&mut periph_0_2, 0_u32);
+    eh0_2::blocking::delay::DelayUs::delay_us(&mut periph_0_2, 0_u32);
 }

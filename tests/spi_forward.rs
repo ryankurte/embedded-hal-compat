@@ -11,23 +11,23 @@ impl eh1_0::spi::Error for ImplError {
     }
 }
 
-struct Spi0;
+struct Peripheral;
 
-impl eh0_2::blocking::spi::Write<u8> for Spi0 {
+impl eh0_2::blocking::spi::Write<u8> for Peripheral {
     type Error = ImplError;
     fn write(&mut self, _words: &[u8]) -> Result<(), Self::Error> {
         Ok(())
     }
 }
 
-impl eh0_2::blocking::spi::Transfer<u8> for Spi0 {
+impl eh0_2::blocking::spi::Transfer<u8> for Peripheral {
     type Error = ImplError;
     fn transfer<'w>(&mut self, words: &'w mut [u8]) -> Result<&'w [u8], Self::Error> {
         Ok(words)
     }
 }
 
-impl eh0_2::blocking::spi::WriteIter<u8> for Spi0 {
+impl eh0_2::blocking::spi::WriteIter<u8> for Peripheral {
     type Error = ImplError;
     fn write_iter<WI>(&mut self, _words: WI) -> Result<(), Self::Error>
     where
@@ -37,7 +37,7 @@ impl eh0_2::blocking::spi::WriteIter<u8> for Spi0 {
     }
 }
 
-impl eh0_2::spi::FullDuplex<u8> for Spi0 {
+impl eh0_2::spi::FullDuplex<u8> for Peripheral {
     type Error = ImplError;
 
     fn read(&mut self) -> nb::Result<u8, Self::Error> {
@@ -50,11 +50,11 @@ impl eh0_2::spi::FullDuplex<u8> for Spi0 {
 
 #[test]
 fn can_forward() {
-    let spi_0_2 = Spi0;
-    let mut spi_1_0 = spi_0_2.forward();
-    assert!(eh1_0::spi::SpiBusWrite::write(&mut spi_1_0, &[]).is_ok());
-    assert!(eh1_0::spi::SpiBusRead::read(&mut spi_1_0, &mut []).is_ok());
-    assert!(eh1_0::spi::SpiBusFlush::flush(&mut spi_1_0).is_ok());
-    assert!(eh1_0::spi::SpiBus::transfer(&mut spi_1_0, &mut [], &[]).is_ok());
-    assert!(eh1_0::spi::SpiBus::transfer_in_place(&mut spi_1_0, &mut []).is_ok());
+    let periph_0_2 = Peripheral;
+    let mut periph_1_0 = periph_0_2.forward();
+    assert!(eh1_0::spi::SpiBusWrite::write(&mut periph_1_0, &[]).is_ok());
+    assert!(eh1_0::spi::SpiBusRead::read(&mut periph_1_0, &mut []).is_ok());
+    assert!(eh1_0::spi::SpiBusFlush::flush(&mut periph_1_0).is_ok());
+    assert!(eh1_0::spi::SpiBus::transfer(&mut periph_1_0, &mut [], &[]).is_ok());
+    assert!(eh1_0::spi::SpiBus::transfer_in_place(&mut periph_1_0, &mut []).is_ok());
 }
