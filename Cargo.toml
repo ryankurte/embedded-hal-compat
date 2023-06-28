@@ -4,15 +4,11 @@ description = "Compatibility layer for interoperability between different embedd
 repository = "https://github.com/ryankurte/embedded-hal-compat"
 keywords = [ "embedded", "embedded-hal", "no-std", "compat", "compatibility" ]
 version = "0.10.0"
-authors = ["ryan <ryan@kurte.nz>"]
+authors = ["Ryan Kurte <ryan@kurte.nz>", "Diego Barrios Romero <eldruin@gmail.com>"]
 edition = "2018"
 license = "MIT"
 
-[features]
-
-
 [dependencies]
-
 defmt = { version = "0.3.0", optional = true }
 nb = "1.1"
 
