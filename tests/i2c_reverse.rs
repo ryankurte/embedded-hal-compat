@@ -50,6 +50,8 @@ fn can_reverse() {
     let periph_1_0 = Peripheral;
     let mut periph_0_2 = periph_1_0.reverse();
     assert!(eh0_2::blocking::i2c::Write::write(&mut periph_0_2, 0, &[]).is_ok());
-    assert!(eh0_2::blocking::i2c::WriteRead::write_read(&mut periph_0_2, 0, &[], &mut data).is_ok());
+    assert!(
+        eh0_2::blocking::i2c::WriteRead::write_read(&mut periph_0_2, 0, &[], &mut data).is_ok()
+    );
     assert!(eh0_2::blocking::i2c::Read::read(&mut periph_0_2, 0, &mut data).is_ok());
 }

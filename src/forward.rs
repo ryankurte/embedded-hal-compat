@@ -266,9 +266,7 @@ mod i2c {
                 eh1_0::i2c::Operation::Read(ref mut buff) => {
                     eh0_2::blocking::i2c::Operation::Read(buff)
                 }
-                eh1_0::i2c::Operation::Write(buff) => {
-                    eh0_2::blocking::i2c::Operation::Write(buff)
-                }
+                eh1_0::i2c::Operation::Write(buff) => eh0_2::blocking::i2c::Operation::Write(buff),
             });
 
             self.inner.exec_iter(address, ops).map_err(ForwardError)
