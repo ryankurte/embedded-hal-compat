@@ -264,4 +264,20 @@ mod serial {
             self.inner.flush()
         }
     }
+
+    impl<T, E> eh0_2::serial::Write<u8> for Reverse<T>
+    where
+        T: eh1_0::serial::Write<u8, Error = E>,
+        E: Debug,
+    {
+        type Error = E;
+
+        fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
+            self.inner.write(&[word]).map_err(nb::Error::Other)
+        }
+
+        fn flush(&mut self) -> nb::Result<(), Self::Error> {
+            self.inner.flush().map_err(nb::Error::Other)
+        }
+    }
 }
