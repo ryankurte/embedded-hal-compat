@@ -54,4 +54,6 @@ fn can_reverse() {
     assert!(eh0_2::blocking::spi::Write::write(&mut periph_0_2, &[]).is_ok());
     assert!(eh0_2::blocking::spi::Transfer::transfer(&mut periph_0_2, &mut []).is_ok());
     assert!(eh0_2::blocking::spi::WriteIter::write_iter(&mut periph_0_2, data).is_ok());
+    assert!(eh0_2::spi::FullDuplex::send(&mut periph_0_2, 0).is_ok());
+    assert_eq!(eh0_2::spi::FullDuplex::read(&mut periph_0_2).unwrap(), 0);
 }
