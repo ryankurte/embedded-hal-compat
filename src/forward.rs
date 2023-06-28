@@ -123,7 +123,6 @@ mod delay {
 /// SPI (blocking)
 mod spi {
     use super::{Forward, ForwardError};
-    use nb;
 
     impl<E: core::fmt::Debug> eh1_0::spi::Error for ForwardError<E> {
         fn kind(&self) -> eh1_0::spi::ErrorKind {
@@ -258,16 +257,16 @@ mod i2c {
                 .map_err(ForwardError)
         }
 
-        fn transaction<'a>(
+        fn transaction(
             &mut self,
             address: SevenBitAddress,
-            operations: &mut [eh1_0::i2c::Operation<'a>],
+            operations: &mut [eh1_0::i2c::Operation],
         ) -> Result<(), Self::Error> {
             let ops = operations.iter_mut().map(|op| match op {
                 eh1_0::i2c::Operation::Read(ref mut buff) => {
-                    eh0_2::blocking::i2c::Operation::Read(*buff)
+                    eh0_2::blocking::i2c::Operation::Read(buff)
                 }
-                eh1_0::i2c::Operation::Write(ref buff) => {
+                eh1_0::i2c::Operation::Write(buff) => {
                     eh0_2::blocking::i2c::Operation::Write(buff)
                 }
             });
