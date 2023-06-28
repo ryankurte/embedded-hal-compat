@@ -131,6 +131,12 @@ mod spi {
         }
     }
 
+    impl<E> From<ForwardError<nb::Error<E>>> for ForwardError<E> {
+        fn from(value: ForwardError<nb::Error<E>>) -> Self {
+            value.into()
+        }
+    }
+
     impl<T, E> eh1_0::spi::ErrorType for Forward<T>
     where
         T: eh0_2::blocking::spi::Write<u8, Error = E>,
