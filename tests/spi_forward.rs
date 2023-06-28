@@ -1,5 +1,3 @@
-use eh0_2;
-use eh1_0;
 use embedded_hal_compat::ForwardCompat;
 
 #[derive(Debug)]
@@ -57,6 +55,6 @@ fn can_forward() {
     assert!(eh1_0::spi::SpiBusWrite::write(&mut spi_1_0, &[]).is_ok());
     assert!(eh1_0::spi::SpiBusRead::read(&mut spi_1_0, &mut []).is_ok());
     assert!(eh1_0::spi::SpiBusFlush::flush(&mut spi_1_0).is_ok());
-    assert!(eh1_0::spi::SpiBus::transfer(&mut spi_1_0, &mut [], &mut []).is_ok());
+    assert!(eh1_0::spi::SpiBus::transfer(&mut spi_1_0, &mut [], &[]).is_ok());
     assert!(eh1_0::spi::SpiBus::transfer_in_place(&mut spi_1_0, &mut []).is_ok());
 }

@@ -1,5 +1,3 @@
-use eh0_2;
-use eh1_0;
 use embedded_hal_compat::ForwardCompat;
 
 #[derive(Debug)]

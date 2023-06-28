@@ -1,5 +1,3 @@
-use eh0_2;
-use eh1_0;
 use embedded_hal_compat::ForwardCompat;
 
 #[derive(Debug)]
@@ -68,10 +66,10 @@ impl eh0_2::blocking::i2c::WriteIterRead for I2c0 {
 
 impl eh0_2::blocking::i2c::Transactional for I2c0 {
     type Error = ImplError;
-    fn exec<'a>(
+    fn exec(
         &mut self,
         _address: u8,
-        _operations: &mut [eh0_2::blocking::i2c::Operation<'a>],
+        _operations: &mut [eh0_2::blocking::i2c::Operation],
     ) -> Result<(), Self::Error> {
         Ok(())
     }
