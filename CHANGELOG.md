@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Serial non-blocking `Write` trait implementation for reverse compatibility.
 - Unit tests.
 
+### Removed
+- `mock` module, which contained only mock implementations for the documentation.
+
 
 ## [0.10.0] - 2023-06-25
 
