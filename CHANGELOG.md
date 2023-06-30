@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - SPI `FullDuplex` trait implementation for reverse compatibility.
 - Serial non-blocking `Write` trait implementation for reverse compatibility.
+- I2C and SPI `Transactional` trait implementations for reverse compatibility (needs `alloc`).
 - Unit tests.
 
 ### Removed

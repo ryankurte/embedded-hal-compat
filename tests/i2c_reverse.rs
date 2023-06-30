@@ -54,4 +54,6 @@ fn can_reverse() {
         eh0_2::blocking::i2c::WriteRead::write_read(&mut periph_0_2, 0, &[], &mut data).is_ok()
     );
     assert!(eh0_2::blocking::i2c::Read::read(&mut periph_0_2, 0, &mut data).is_ok());
+    #[cfg(feature = "alloc")]
+    assert!(eh0_2::blocking::i2c::Transactional::exec(&mut periph_0_2, 0, &mut []).is_ok());
 }

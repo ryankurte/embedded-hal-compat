@@ -33,7 +33,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rust: [stable, beta, 1.60.0]
+        rust: [stable, 1.60.0]
+        features: ["", "--features alloc"]
         TARGET:
           - x86_64-unknown-linux-gnu
           - x86_64-unknown-linux-musl
@@ -52,14 +53,15 @@ jobs:
           toolchain: ${{ matrix.rust }}
           targets: ${{ matrix.TARGET }}
 
-      - run: cargo build --target=${{ matrix.TARGET }}
+      - run: cargo build ${{matrix.features}} --target=${{ matrix.TARGET }}
 
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rust: [stable, beta]
-        TARGET: [x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl]
+        rust: [stable]
+        features: ["", "--features alloc"]
+        TARGET: [x86_64-unknown-linux-gnu]
 
     steps:
       - uses: actions/checkout@v3
@@ -68,4 +70,4 @@ jobs:
           toolchain: ${{ matrix.rust }}
           targets: ${{ matrix.TARGET }}
 
-      - run: cargo test --target=${{ matrix.TARGET }}
+      - run: cargo test ${{matrix.features}} --target=${{ matrix.TARGET }}
