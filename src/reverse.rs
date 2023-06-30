@@ -178,6 +178,24 @@ mod spi {
             Ok(())
         }
     }
+
+    impl<T, E> eh0_2::spi::FullDuplex<u8> for Reverse<T>
+    where
+        T: eh1_0::spi::SpiBusRead<u8, Error = E> + eh1_0::spi::SpiBusWrite<u8, Error = E>,
+        E: Debug,
+    {
+        type Error = E;
+        fn read(&mut self) -> nb::Result<u8, Self::Error> {
+            let mut data = [0];
+            match self.inner.read(&mut data) {
+                Ok(_) => Ok(data[0]),
+                Err(e) => Err(nb::Error::Other(e)),
+            }
+        }
+        fn send(&mut self, word: u8) -> nb::Result<(), Self::Error> {
+            self.inner.write(&[word]).map_err(nb::Error::Other)
+        }
+    }
 }
 
 // I2C (blocking)
@@ -244,6 +262,22 @@ mod serial {
 
         fn bflush(&mut self) -> Result<(), Self::Error> {
             self.inner.flush()
+        }
+    }
+
+    impl<T, E> eh0_2::serial::Write<u8> for Reverse<T>
+    where
+        T: eh1_0::serial::Write<u8, Error = E>,
+        E: Debug,
+    {
+        type Error = E;
+
+        fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
+            self.inner.write(&[word]).map_err(nb::Error::Other)
+        }
+
+        fn flush(&mut self) -> nb::Result<(), Self::Error> {
+            self.inner.flush().map_err(nb::Error::Other)
         }
     }
 }

@@ -18,7 +18,32 @@
 //! `v1.0.x` types.
 //!
 //!```
-//! # use embedded_hal_compat::mock::OutputPin0_2;
+//! # use core::convert::Infallible;
+//! # pub struct OutputPin0_2;
+//! #
+//! # impl eh1_0::digital::ErrorType for OutputPin0_2 {
+//! #     type Error = Infallible;
+//! # }
+//! #
+//! # impl eh0_2::digital::v2::OutputPin for OutputPin0_2 {
+//! #     type Error = Infallible;
+//! #     fn set_high(&mut self) -> Result<(), Self::Error> {
+//! #         Ok(())
+//! #     }
+//! #     fn set_low(&mut self) -> Result<(), Self::Error> {
+//! #         Ok(())
+//! #     }
+//! # }
+//! #
+//! # impl eh0_2::digital::v2::InputPin for OutputPin0_2 {
+//! #     type Error = Infallible;
+//! #     fn is_high(&self) -> Result<bool, Self::Error> {
+//! #         Ok(true)
+//! #     }
+//! #     fn is_low(&self) -> Result<bool, Self::Error> {
+//! #         Ok(false)
+//! #     }
+//! # }
 //! use embedded_hal_compat::ForwardCompat;
 //!
 //! // Create e-h v0.2.x based type (mock)
@@ -40,7 +65,24 @@
 //! `v0.2.x` types.
 //!
 //!```
-//! # use embedded_hal_compat::mock::OutputPin1_0;
+//! # use core::convert::Infallible;
+//! # pub struct OutputPin1_0;
+//! #
+//! # impl eh1_0::digital::ErrorType for OutputPin1_0 {
+//! #     type Error = Infallible;
+//! # }
+//! #
+//! # impl eh1_0::digital::OutputPin for OutputPin1_0 {
+//! #     /// Set the output as high
+//! #     fn set_high(&mut self) -> Result<(), Self::Error> {
+//! #         Ok(())
+//! #     }
+//! #
+//! #     /// Set the output as low
+//! #     fn set_low(&mut self) -> Result<(), Self::Error> {
+//! #         Ok(())
+//! #     }
+//! # }
 //! use embedded_hal_compat::ReverseCompat;
 //!
 //! // Create e-h v1.x.x based type (mock)
@@ -70,60 +112,3 @@ pub use forward::{Forward, ForwardCompat};
 
 // Reverse compatibility wrapper trait, access using `.reverse()`
 pub use reverse::{Reverse, ReverseCompat};
-
-/// Mock types for documentation, please ignore
-pub mod mock {
-    use core::convert::Infallible;
-
-    pub struct OutputPin0_2;
-
-    impl eh1_0::digital::ErrorType for OutputPin0_2 {
-        type Error = Infallible;
-    }
-
-    impl eh0_2::digital::v2::OutputPin for OutputPin0_2 {
-        type Error = Infallible;
-
-        /// Set the output as high
-        fn set_high(&mut self) -> Result<(), Self::Error> {
-            Ok(())
-        }
-
-        /// Set the output as low
-        fn set_low(&mut self) -> Result<(), Self::Error> {
-            Ok(())
-        }
-    }
-
-    impl eh0_2::digital::v2::InputPin for OutputPin0_2 {
-        type Error = Infallible;
-
-        /// Set the output as high
-        fn is_high(&self) -> Result<bool, Self::Error> {
-            Ok(true)
-        }
-
-        /// Set the output as low
-        fn is_low(&self) -> Result<bool, Self::Error> {
-            Ok(false)
-        }
-    }
-
-    pub struct OutputPin1_0;
-
-    impl eh1_0::digital::ErrorType for OutputPin1_0 {
-        type Error = Infallible;
-    }
-
-    impl eh1_0::digital::OutputPin for OutputPin1_0 {
-        /// Set the output as high
-        fn set_high(&mut self) -> Result<(), Self::Error> {
-            Ok(())
-        }
-
-        /// Set the output as low
-        fn set_low(&mut self) -> Result<(), Self::Error> {
-            Ok(())
-        }
-    }
-}
