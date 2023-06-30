@@ -95,7 +95,23 @@
 //! // Access via e-h v0.2.x methods
 //! let _ = eh0_2::digital::v2::OutputPin::set_high(&mut old);
 //!```
+//!
+//! ## Optional features
+//! ### `alloc`
+//! The `alloc` feature enables an implementation of the I2C and SPI `Transactional`
+//! traits from `embedded-hal` `v0.2.x` for the "reverse" direction.
+//!
+//! For example, when your MCU implements the`embedded-hal` `1.0.0` traits
+//! and you want to connect with an I2C or SPI driver that uses
+//! the `Transactional` traits of `embedded-hal` `0.2.x`.
+//!
+//! **For all other cases, this feature is unnecessary**.
+//!
+//! Do not enable it if you do not need it.
+//!
+//! Note that this introduces a dependency on the [core allocation library](https://doc.rust-lang.org/alloc/).
 
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![no_std]
 
 /// Re-export of the linked embedded-hal `v0.2.x` version for convenience

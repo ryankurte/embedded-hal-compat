@@ -196,6 +196,50 @@ mod spi {
             self.inner.write(&[word]).map_err(nb::Error::Other)
         }
     }
+
+    #[cfg(feature = "alloc")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
+    extern crate alloc;
+    #[cfg(feature = "alloc")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
+    impl<T, E> eh0_2::blocking::spi::Transactional<u8> for Reverse<T>
+    where
+        T: eh1_0::spi::SpiBus<Error = E>,
+        E: Debug,
+    {
+        type Error = E;
+
+        fn exec(
+            &mut self,
+            operations: &mut [eh0_2::blocking::spi::Operation<u8>],
+        ) -> Result<(), Self::Error> {
+            let mut data = alloc::vec::Vec::<u8>::new();
+            for op in operations.iter() {
+                match op {
+                    eh0_2::blocking::spi::Operation::Transfer(buf) => data.extend_from_slice(buf),
+                    eh0_2::blocking::spi::Operation::Write(buf) => data.extend_from_slice(buf),
+                }
+            }
+            let result = self.inner.transfer_in_place(&mut data);
+            let mut data_iter = data.iter();
+            for op in operations.iter_mut() {
+                match op {
+                    eh0_2::blocking::spi::Operation::Transfer(buf) => {
+                        buf.copy_from_slice(&data_iter.as_slice()[0..buf.len()]);
+                        if !buf.is_empty() {
+                            data_iter.nth(buf.len() - 1);
+                        }
+                    }
+                    eh0_2::blocking::spi::Operation::Write(buf) => {
+                        if !buf.is_empty() {
+                            data_iter.nth(buf.len() - 1);
+                        }
+                    }
+                }
+            }
+            result
+        }
+    }
 }
 
 // I2C (blocking)
@@ -241,6 +285,38 @@ mod i2c {
             buffer: &mut [u8],
         ) -> Result<(), Self::Error> {
             self.inner.write_read(address, bytes, buffer)
+        }
+    }
+
+    #[cfg(feature = "alloc")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
+    extern crate alloc;
+    #[cfg(feature = "alloc")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
+    impl<T, E> eh0_2::blocking::i2c::Transactional for Reverse<T>
+    where
+        T: eh1_0::i2c::I2c<SevenBitAddress, Error = E>,
+        E: Debug,
+    {
+        type Error = E;
+
+        fn exec(
+            &mut self,
+            address: u8,
+            operations: &mut [eh0_2::blocking::i2c::Operation],
+        ) -> Result<(), Self::Error> {
+            let mut ops: alloc::vec::Vec<eh1_0::i2c::Operation> = operations
+                .iter_mut()
+                .map(|op| match op {
+                    eh0_2::blocking::i2c::Operation::Read(ref mut buff) => {
+                        eh1_0::i2c::Operation::Read(buff)
+                    }
+                    eh0_2::blocking::i2c::Operation::Write(buff) => {
+                        eh1_0::i2c::Operation::Write(buff)
+                    }
+                })
+                .collect();
+            self.inner.transaction(address, &mut ops)
         }
     }
 }
