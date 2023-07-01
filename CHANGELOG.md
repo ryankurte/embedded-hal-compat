@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.10.1] - 2023-07-01
+
 ### Fixed
 - Error forwarding for SPI
 
@@ -26,5 +28,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Adapted to `embedded-hal` version `1.0.0-alpha.10`
 
 
-[Unreleased]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.10.1...HEAD
+[0.10.1]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/ryankurte/embedded-hal-compat/releases/tag/v0.10.0
