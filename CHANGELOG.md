@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Adapted to `embedded-hal` version `1.0.0-alpha.11`
+
 ## [0.10.1] - 2023-07-01
 
 ### Fixed

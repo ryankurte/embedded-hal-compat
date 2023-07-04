@@ -52,9 +52,9 @@ impl eh0_2::spi::FullDuplex<u8> for Peripheral {
 fn can_forward() {
     let periph_0_2 = Peripheral;
     let mut periph_1_0 = periph_0_2.forward();
-    assert!(eh1_0::spi::SpiBusWrite::write(&mut periph_1_0, &[]).is_ok());
-    assert!(eh1_0::spi::SpiBusRead::read(&mut periph_1_0, &mut []).is_ok());
-    assert!(eh1_0::spi::SpiBusFlush::flush(&mut periph_1_0).is_ok());
+    assert!(eh1_0::spi::SpiBus::write(&mut periph_1_0, &[]).is_ok());
+    assert!(eh1_0::spi::SpiBus::read(&mut periph_1_0, &mut []).is_ok());
+    assert!(eh1_0::spi::SpiBus::flush(&mut periph_1_0).is_ok());
     assert!(eh1_0::spi::SpiBus::transfer(&mut periph_1_0, &mut [], &[]).is_ok());
     assert!(eh1_0::spi::SpiBus::transfer_in_place(&mut periph_1_0, &mut []).is_ok());
 }

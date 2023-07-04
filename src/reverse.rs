@@ -138,7 +138,7 @@ mod spi {
 
     impl<T, E> eh0_2::blocking::spi::Write<u8> for Reverse<T>
     where
-        T: eh1_0::spi::SpiBusWrite<u8, Error = E>,
+        T: eh1_0::spi::SpiBus<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -163,7 +163,7 @@ mod spi {
 
     impl<T, E> eh0_2::blocking::spi::WriteIter<u8> for Reverse<T>
     where
-        T: eh1_0::spi::SpiBusWrite<u8, Error = E>,
+        T: eh1_0::spi::SpiBus<u8, Error = E>,
         E: Debug,
     {
         type Error = E;
@@ -181,7 +181,7 @@ mod spi {
 
     impl<T, E> eh0_2::spi::FullDuplex<u8> for Reverse<T>
     where
-        T: eh1_0::spi::SpiBusRead<u8, Error = E> + eh1_0::spi::SpiBusWrite<u8, Error = E>,
+        T: eh1_0::spi::SpiBus<u8, Error = E>,
         E: Debug,
     {
         type Error = E;

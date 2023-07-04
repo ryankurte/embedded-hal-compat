@@ -144,30 +144,11 @@ mod spi {
         type Error = ForwardError<E>;
     }
 
-    impl<T, E> eh1_0::spi::SpiBusFlush for Forward<T>
+    impl<T, E, F> eh1_0::spi::SpiBus<u8> for Forward<T>
     where
-        T: eh0_2::blocking::spi::Write<u8, Error = E>,
-        E: core::fmt::Debug,
-    {
-        fn flush(&mut self) -> Result<(), Self::Error> {
-            // TODO: This API doesn't exist in 0.2.7
-            Ok(())
-        }
-    }
-
-    impl<T, E> eh1_0::spi::SpiBusWrite<u8> for Forward<T>
-    where
-        T: eh0_2::blocking::spi::Write<u8, Error = E>,
-        E: core::fmt::Debug,
-    {
-        fn write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
-            self.inner.write(words).map_err(ForwardError)
-        }
-    }
-
-    impl<T, E, F> eh1_0::spi::SpiBusRead<u8> for Forward<T>
-    where
-        T: eh0_2::spi::FullDuplex<u8, Error = F> + eh0_2::blocking::spi::Write<u8, Error = E>,
+        T: eh0_2::blocking::spi::Write<u8, Error = E>
+            + eh0_2::blocking::spi::Transfer<u8, Error = E>
+            + eh0_2::spi::FullDuplex<u8, Error = F>,
         E: core::fmt::Debug,
         ForwardError<E>: From<ForwardError<nb::Error<F>>>,
     {
@@ -179,16 +160,11 @@ mod spi {
             }
             Ok(())
         }
-    }
 
-    impl<T, E, F> eh1_0::spi::SpiBus<u8> for Forward<T>
-    where
-        T: eh0_2::blocking::spi::Write<u8, Error = E>
-            + eh0_2::blocking::spi::Transfer<u8, Error = E>
-            + eh0_2::spi::FullDuplex<u8, Error = F>,
-        E: core::fmt::Debug,
-        ForwardError<E>: From<ForwardError<nb::Error<F>>>,
-    {
+        fn write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
+            self.inner.write(words).map_err(ForwardError)
+        }
+
         fn transfer(&mut self, read: &mut [u8], write: &[u8]) -> Result<(), Self::Error> {
             //self.inner.transfer(words).map_err(ForwardError)?;
             read.copy_from_slice(&write[..read.len()]);
@@ -201,6 +177,11 @@ mod spi {
                 self.inner.send(*word).map_err(ForwardError)?;
                 *word = self.inner.read().map_err(ForwardError)?;
             }
+            Ok(())
+        }
+
+        fn flush(&mut self) -> Result<(), Self::Error> {
+            // TODO: This API doesn't exist in 0.2.7
             Ok(())
         }
     }
