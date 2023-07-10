@@ -67,7 +67,7 @@ mod digital {
 
     impl<T, E> eh1_0::digital::ErrorType for Forward<T>
     where
-        T: eh0_2::digital::v2::InputPin<Error = E>,
+        T: eh0_2::digital::v2::OutputPin<Error = E>,
         E: core::fmt::Debug,
     {
         type Error = super::ForwardError<E>;
@@ -75,7 +75,7 @@ mod digital {
 
     impl<T, E> eh1_0::digital::InputPin for Forward<T>
     where
-        T: eh0_2::digital::v2::InputPin<Error = E>,
+        T: eh0_2::digital::v2::InputPin<Error = E> + eh0_2::digital::v2::OutputPin<Error = E>,
         E: core::fmt::Debug,
     {
         /// Is the input pin high?
@@ -91,7 +91,7 @@ mod digital {
 
     impl<T, E> eh1_0::digital::OutputPin for Forward<T>
     where
-        T: eh0_2::digital::v2::OutputPin<Error = E> + eh0_2::digital::v2::InputPin<Error = E>,
+        T: eh0_2::digital::v2::OutputPin<Error = E>,
         E: core::fmt::Debug,
     {
         /// Set the output as high
