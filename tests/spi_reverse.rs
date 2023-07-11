@@ -17,29 +17,20 @@ impl eh1_0::spi::ErrorType for Peripheral {
     type Error = ImplError;
 }
 
-impl eh1_0::spi::SpiBusRead for Peripheral {
+impl eh1_0::spi::SpiBus for Peripheral {
     fn read(&mut self, _words: &mut [u8]) -> Result<(), Self::Error> {
         Ok(())
     }
-}
-
-impl eh1_0::spi::SpiBusWrite for Peripheral {
     fn write(&mut self, _words: &[u8]) -> Result<(), Self::Error> {
         Ok(())
     }
-}
-
-impl eh1_0::spi::SpiBusFlush for Peripheral {
-    fn flush(&mut self) -> Result<(), Self::Error> {
-        Ok(())
-    }
-}
-
-impl eh1_0::spi::SpiBus for Peripheral {
     fn transfer(&mut self, _read: &mut [u8], _write: &[u8]) -> Result<(), Self::Error> {
         Ok(())
     }
     fn transfer_in_place(&mut self, _words: &mut [u8]) -> Result<(), Self::Error> {
+        Ok(())
+    }
+    fn flush(&mut self) -> Result<(), Self::Error> {
         Ok(())
     }
 }
