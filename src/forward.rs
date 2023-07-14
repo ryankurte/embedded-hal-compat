@@ -2,31 +2,39 @@
 //! A compatibility layer to alleviate (some) of the issues resolving from changes to embedded-hal
 // Copyright 2021 Ryan Kurte
 
+use core::marker::PhantomData;
+
 /// Forward compatibility container object.
 /// This is generic over different E-H types and will provide adaption
 /// depending on the bound type.
-pub struct Forward<T> {
+pub struct Forward<T, M = ()> {
     inner: T,
+    _marker: PhantomData<M>,
 }
 
 /// Helper trait to convert a type for forward compatibility
 /// call `.forward()` on `e-h@0.2.x` types to create an `e-h@1.x.x` compatible wrapper object
-pub trait ForwardCompat<T> {
-    fn forward(self) -> Forward<T>;
-}
-
-impl<T> ForwardCompat<T> for T {
+pub trait ForwardCompat<T, M = ()> {
     /// Create an e-h-c forward compatibility wrapper around and e-h object
     /// Available methods depend on the wrapped type
-    fn forward(self) -> Forward<T> {
+    fn forward(self) -> Forward<T, M>;
+}
+
+/// Blanket [ForwardCompat] implementation
+/// (note input/output/io pins may require type annotations)
+impl<T, M> ForwardCompat<T, M> for T {
+    fn forward(self) -> Forward<T, M> {
         Forward::new(self)
     }
 }
 
-impl<T> Forward<T> {
+impl<T, M> Forward<T, M> {
     /// Create a new compatibility wrapper object
-    pub fn new(inner: T) -> Forward<T> {
-        Forward { inner }
+    pub fn new(inner: T) -> Forward<T, M> {
+        Forward {
+            inner,
+            _marker: PhantomData,
+        }
     }
 
     /// Fetch a reference to the wrapped object
@@ -58,6 +66,7 @@ pub struct ForwardError<E>(pub E);
 // Digital / GPIOs
 mod digital {
     use super::{Forward, ForwardError};
+    use crate::markers::{ForwardInputPin, ForwardIoPin, ForwardOutputPin};
 
     impl<E: core::fmt::Debug> eh1_0::digital::Error for ForwardError<E> {
         fn kind(&self) -> eh1_0::digital::ErrorKind {
@@ -65,7 +74,31 @@ mod digital {
         }
     }
 
-    impl<T, E> eh1_0::digital::ErrorType for Forward<T>
+    impl<T, E> eh1_0::digital::ErrorType for Forward<T, ForwardInputPin>
+    where
+        T: eh0_2::digital::v2::InputPin<Error = E>,
+        E: core::fmt::Debug,
+    {
+        type Error = super::ForwardError<E>;
+    }
+
+    impl<T, E> eh1_0::digital::InputPin for Forward<T, ForwardInputPin>
+    where
+        T: eh0_2::digital::v2::InputPin<Error = E>,
+        E: core::fmt::Debug,
+    {
+        /// Is the input pin high?
+        fn is_high(&self) -> Result<bool, Self::Error> {
+            self.inner.is_high().map_err(ForwardError)
+        }
+
+        /// Is the input pin low?
+        fn is_low(&self) -> Result<bool, Self::Error> {
+            self.inner.is_low().map_err(ForwardError)
+        }
+    }
+
+    impl<T, E> eh1_0::digital::ErrorType for Forward<T, ForwardOutputPin>
     where
         T: eh0_2::digital::v2::OutputPin<Error = E>,
         E: core::fmt::Debug,
@@ -73,7 +106,31 @@ mod digital {
         type Error = super::ForwardError<E>;
     }
 
-    impl<T, E> eh1_0::digital::InputPin for Forward<T>
+    impl<T, E> eh1_0::digital::OutputPin for Forward<T, ForwardOutputPin>
+    where
+        T: eh0_2::digital::v2::OutputPin<Error = E>,
+        E: core::fmt::Debug,
+    {
+        /// Set the output as high
+        fn set_high(&mut self) -> Result<(), Self::Error> {
+            self.inner.set_high().map_err(ForwardError)
+        }
+
+        /// Set the output as low
+        fn set_low(&mut self) -> Result<(), Self::Error> {
+            self.inner.set_low().map_err(ForwardError)
+        }
+    }
+
+    impl<T, E> eh1_0::digital::ErrorType for Forward<T, ForwardIoPin>
+    where
+        T: eh0_2::digital::v2::OutputPin<Error = E> + eh0_2::digital::v2::InputPin<Error = E>,
+        E: core::fmt::Debug,
+    {
+        type Error = super::ForwardError<E>;
+    }
+
+    impl<T, E> eh1_0::digital::InputPin for Forward<T, ForwardIoPin>
     where
         T: eh0_2::digital::v2::InputPin<Error = E> + eh0_2::digital::v2::OutputPin<Error = E>,
         E: core::fmt::Debug,
@@ -89,9 +146,9 @@ mod digital {
         }
     }
 
-    impl<T, E> eh1_0::digital::OutputPin for Forward<T>
+    impl<T, E> eh1_0::digital::OutputPin for Forward<T, ForwardIoPin>
     where
-        T: eh0_2::digital::v2::OutputPin<Error = E>,
+        T: eh0_2::digital::v2::InputPin<Error = E> + eh0_2::digital::v2::OutputPin<Error = E>,
         E: core::fmt::Debug,
     {
         /// Set the output as high
