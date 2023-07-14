@@ -83,7 +83,7 @@ fn io_pin_forward() {
 #[test]
 fn input_pin_forward() {
     let periph_0_2 = InputPin;
-    let mut periph_1_0 = periph_0_2.forward();
+    let periph_1_0 = periph_0_2.forward();
     assert!(eh1_0::digital::InputPin::is_high(&periph_1_0).unwrap());
 }
 
