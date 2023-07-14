@@ -17,6 +17,9 @@
 //! use with `v1.0.x` consumers, so you can drop these wrapped types into drivers expecting
 //! `v1.0.x` types.
 //!
+//! Note that GPIO pins will require annotation with marker types (see [markers]) to select
+//! input / output / combined modes.
+//!
 //!```
 //! # use core::convert::Infallible;
 //! # pub struct OutputPin0_2;
@@ -44,7 +47,7 @@
 //! #         Ok(false)
 //! #     }
 //! # }
-//! use embedded_hal_compat::ForwardCompat;
+//! use embedded_hal_compat::{Forward, ForwardCompat, markers::*};
 //!
 //! // Create e-h v0.2.x based type (mock)
 //! let mut old = OutputPin0_2;
@@ -52,7 +55,7 @@
 //! let _ = eh0_2::digital::v2::OutputPin::set_high(&mut old);
 //!
 //! // Apply forward compatibility wrapper
-//! let mut new = old.forward();
+//! let mut new: Forward<_, ForwardIoPin> = old.forward();
 //! // Access via e-h v1.x.x methods
 //! let _ = eh1_0::digital::OutputPin::set_high(&mut new);
 //!```
@@ -121,6 +124,7 @@ pub use eh0_2;
 pub use eh1_0;
 
 mod forward;
+pub mod markers;
 mod reverse;
 
 // Forward compatibility wrapper trait, access using `.forward()`
