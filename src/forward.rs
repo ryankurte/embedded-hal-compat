@@ -187,34 +187,26 @@ mod spi {
         }
     }
 
-    impl<E> From<ForwardError<nb::Error<E>>> for ForwardError<E> {
-        fn from(value: ForwardError<nb::Error<E>>) -> Self {
-            value.into()
-        }
-    }
-
     impl<T, E> eh1_0::spi::ErrorType for Forward<T>
     where
-        T: eh0_2::blocking::spi::Write<u8, Error = E>,
+        T: eh0_2::blocking::spi::Transfer<u8, Error = E>,
         E: core::fmt::Debug,
     {
         type Error = ForwardError<E>;
     }
 
-    impl<T, E, F> eh1_0::spi::SpiBus<u8> for Forward<T>
+    impl<T, E> eh1_0::spi::SpiBus<u8> for Forward<T>
     where
-        T: eh0_2::blocking::spi::Write<u8, Error = E>
-            + eh0_2::blocking::spi::Transfer<u8, Error = E>
-            + eh0_2::spi::FullDuplex<u8, Error = F>,
+        T: eh0_2::blocking::spi::Transfer<u8, Error = E>
+            + eh0_2::blocking::spi::Write<u8, Error = E>,
         E: core::fmt::Debug,
-        ForwardError<E>: From<ForwardError<nb::Error<F>>>,
     {
         fn read(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
+            // Clear buffer to send empty bytes
             for word in words.iter_mut() {
-                // Send out empty bytes to read reply
-                self.inner.send(0u8).map_err(ForwardError)?;
-                *word = self.inner.read().map_err(ForwardError)?;
+                *word = 0x00;
             }
+            self.inner.transfer(words).map_err(ForwardError)?;
             Ok(())
         }
 
@@ -223,17 +215,13 @@ mod spi {
         }
 
         fn transfer(&mut self, read: &mut [u8], write: &[u8]) -> Result<(), Self::Error> {
-            //self.inner.transfer(words).map_err(ForwardError)?;
             read.copy_from_slice(&write[..read.len()]);
             self.inner.transfer(read).map_err(ForwardError)?;
             Ok(())
         }
 
         fn transfer_in_place(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
-            for word in words.iter_mut() {
-                self.inner.send(*word).map_err(ForwardError)?;
-                *word = self.inner.read().map_err(ForwardError)?;
-            }
+            self.inner.transfer(words).map_err(ForwardError)?;
             Ok(())
         }
 
