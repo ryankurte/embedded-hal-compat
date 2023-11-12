@@ -10,6 +10,7 @@ This crate is intended to track `1.0.0-alpha` versions, and update to `1.0.0` on
 
 Each release of `embedded-hal-compat` supports one(ish) pair of e-h releases, because of changes to the `1.0.0-alpha`, use:
 
+- `embedded-hal-compat = "0.12.0"` for `=1.0.0-rc.1` and `^0.2.7`
 - `embedded-hal-compat = "0.11.0"` for `=1.0.0-alpha.11` and `^0.2.7`
 - `embedded-hal-compat = "0.10.0"` for `=1.0.0-alpha.10` and `^0.2.7`
 - `embedded-hal-compat = "0.7.0"` for `=1.0.0-alpha.8` and `^0.2.4`
