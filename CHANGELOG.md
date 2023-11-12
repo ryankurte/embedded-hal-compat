@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Updated to `embedded-hal` version `1.0.0-rc.1`.
+
 ### Changed
+- Support for `embedded-hal` 0.2 serial traits now through `embedded-io` `0.6`.
 - Renamed `defmt` feature `defmt-03` for explicitness and consistency across the ecosystem.
 - Updated MSRV to 1.62.0 due to dependencies.
 

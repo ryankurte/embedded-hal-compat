@@ -9,10 +9,13 @@ edition = "2018"
 license = "MIT"
 
 [features]
-defmt-03 = ["dep:defmt"]
+alloc = ["embedded-io?/alloc"]
+defmt-03 = ["dep:defmt", "embedded-io?/defmt-03"]
+embedded-io = ["dep:embedded-io"]
 
 [dependencies]
 defmt = { version = "0.3.0", optional = true }
+embedded-io = { version = "0.6", optional = true }
 nb = "1.1"
 
 [dependencies.eh0_2]
@@ -22,7 +25,8 @@ features = [ "unproven" ]
 
 [dependencies.eh1_0]
 package = "embedded-hal"
-version = "=1.0.0-alpha.11"
+version = "=1.0.0-rc.1"
+
 
 [package.metadata.docs.rs]
 # To build locally:

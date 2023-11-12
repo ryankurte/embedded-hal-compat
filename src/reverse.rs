@@ -322,18 +322,20 @@ mod i2c {
 }
 
 /// Serial (UART etc.)
+#[cfg(feature = "embedded-io")]
+#[cfg_attr(docsrs, doc(cfg(feature = "embedded-io")))]
 mod serial {
     use super::{Debug, Reverse};
 
     impl<T, E> eh0_2::blocking::serial::Write<u8> for Reverse<T>
     where
-        T: eh1_0::serial::Write<u8, Error = E>,
+        T: embedded_io::Write<Error = E>,
         E: Debug,
     {
         type Error = E;
 
         fn bwrite_all(&mut self, words: &[u8]) -> Result<(), Self::Error> {
-            self.inner.write(words)
+            self.inner.write(words).map(drop)
         }
 
         fn bflush(&mut self) -> Result<(), Self::Error> {
@@ -343,13 +345,16 @@ mod serial {
 
     impl<T, E> eh0_2::serial::Write<u8> for Reverse<T>
     where
-        T: eh1_0::serial::Write<u8, Error = E>,
+        T: embedded_io::Write<Error = E>,
         E: Debug,
     {
         type Error = E;
 
         fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
-            self.inner.write(&[word]).map_err(nb::Error::Other)
+            self.inner
+                .write(&[word])
+                .map_err(nb::Error::Other)
+                .map(drop)
         }
 
         fn flush(&mut self) -> nb::Result<(), Self::Error> {

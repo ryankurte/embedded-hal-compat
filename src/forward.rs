@@ -301,16 +301,18 @@ mod i2c {
 }
 
 /// Serial (UART etc.)
+#[cfg(feature = "embedded-io")]
+#[cfg_attr(docsrs, doc(cfg(feature = "embedded-io")))]
 mod serial {
     use super::{Forward, ForwardError};
 
-    impl<E: core::fmt::Debug> eh1_0::serial::Error for ForwardError<E> {
-        fn kind(&self) -> eh1_0::serial::ErrorKind {
-            eh1_0::serial::ErrorKind::Other
+    impl<E: core::fmt::Debug> embedded_io::Error for ForwardError<E> {
+        fn kind(&self) -> embedded_io::ErrorKind {
+            embedded_io::ErrorKind::Other
         }
     }
 
-    impl<T, E> eh1_0::serial::ErrorType for Forward<T>
+    impl<T, E> embedded_io::ErrorType for Forward<T>
     where
         T: eh0_2::blocking::serial::Write<u8, Error = E>,
         E: core::fmt::Debug,
@@ -318,13 +320,16 @@ mod serial {
         type Error = ForwardError<E>;
     }
 
-    impl<T, E> eh1_0::serial::Write<u8> for Forward<T>
+    impl<T, E> embedded_io::Write for Forward<T>
     where
         T: eh0_2::blocking::serial::Write<u8, Error = E>,
         E: core::fmt::Debug,
     {
-        fn write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
-            self.inner.bwrite_all(words).map_err(ForwardError)
+        fn write(&mut self, words: &[u8]) -> Result<usize, Self::Error> {
+            self.inner
+                .bwrite_all(words)
+                .map_err(ForwardError)
+                .and(Ok(words.len()))
         }
 
         fn flush(&mut self) -> Result<(), Self::Error> {
