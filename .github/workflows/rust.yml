@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rust: [stable, 1.60.0]
+        rust: [stable, 1.62.0]
         features: ["", "--features alloc"]
         TARGET:
           - x86_64-unknown-linux-gnu

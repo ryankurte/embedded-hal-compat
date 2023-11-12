@@ -25,6 +25,7 @@ Each release of `embedded-hal-compat` supports one(ish) pair of e-h releases, be
 [![Build Status](https://github.com/ryankurte/embedded-hal-compat/actions/workflows/rust.yml/badge.svg)](https://github.com/ryankurte/embedded-hal-compat/actions/workflows/rust.yml)
 [![Crates.io](https://img.shields.io/crates/v/embedded-hal-compat.svg)](https://crates.io/crates/embedded-hal-compat)
 [![Docs.rs](https://docs.rs/embedded-hal-compat/badge.svg)](https://docs.rs/embedded-hal-compat)
+![Minimum Supported Rust Version](https://img.shields.io/badge/rustc-1.62+-blue.svg)
 
 Not all wrappers are fully implemented, feel free to open a PR if you come across something missing!
 
