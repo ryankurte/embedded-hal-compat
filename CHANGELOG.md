@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.12.0] - 2023-11-13
+
+### Added
+- Updated to `embedded-hal` version `1.0.0-rc.1`.
+
+### Changed
+- Support for `embedded-hal` 0.2 serial traits now through `embedded-io` `0.6`.
+- Renamed `defmt` feature `defmt-03` for explicitness and consistency across the ecosystem.
+- Updated MSRV to 1.62.0 due to dependencies.
+
 ## [0.11.1] - 2023-07-14
 
 ### Fixed
@@ -38,7 +48,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Adapted to `embedded-hal` version `1.0.0-alpha.10`
 
 
-[Unreleased]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.11.1...HEAD
+[Unreleased]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/ryankurte/embedded-hal-compat/compare/v0.10.0...v0.10.1

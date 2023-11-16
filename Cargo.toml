@@ -3,16 +3,19 @@ name = "embedded-hal-compat"
 description = "Compatibility layer for interoperability between different embedded-hal versions"
 repository = "https://github.com/ryankurte/embedded-hal-compat"
 keywords = [ "embedded", "embedded-hal", "no-std", "compat", "compatibility" ]
-version = "0.11.1"
+version = "0.12.0"
 authors = ["Ryan Kurte <ryan@kurte.nz>", "Diego Barrios Romero <eldruin@gmail.com>"]
 edition = "2018"
 license = "MIT"
 
 [features]
-alloc = []
+alloc = ["embedded-io?/alloc"]
+defmt-03 = ["dep:defmt", "embedded-io?/defmt-03"]
+embedded-io = ["dep:embedded-io"]
 
 [dependencies]
 defmt = { version = "0.3.0", optional = true }
+embedded-io = { version = "0.6", optional = true }
 nb = "1.1"
 
 [dependencies.eh0_2]
@@ -22,7 +25,8 @@ features = [ "unproven" ]
 
 [dependencies.eh1_0]
 package = "embedded-hal"
-version = "=1.0.0-alpha.11"
+version = "=1.0.0-rc.1"
+
 
 [package.metadata.docs.rs]
 # To build locally:

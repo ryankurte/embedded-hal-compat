@@ -123,6 +123,11 @@ pub use eh0_2;
 /// Re-export of the linked embedded-hal `v1.0.x` version for convenience
 pub use eh1_0;
 
+/// Re-export of the linked embedded-io version for convenience
+#[cfg(feature = "embedded-io")]
+#[cfg_attr(docsrs, doc(cfg(feature = "embedded-io")))]
+pub use embedded_io;
+
 mod forward;
 pub mod markers;
 mod reverse;

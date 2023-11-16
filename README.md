@@ -10,6 +10,7 @@ This crate is intended to track `1.0.0-alpha` versions, and update to `1.0.0` on
 
 Each release of `embedded-hal-compat` supports one(ish) pair of e-h releases, because of changes to the `1.0.0-alpha`, use:
 
+- `embedded-hal-compat = "0.12.0"` for `=1.0.0-rc.1` and `^0.2.7`
 - `embedded-hal-compat = "0.11.0"` for `=1.0.0-alpha.11` and `^0.2.7`
 - `embedded-hal-compat = "0.10.0"` for `=1.0.0-alpha.10` and `^0.2.7`
 - `embedded-hal-compat = "0.7.0"` for `=1.0.0-alpha.8` and `^0.2.4`
@@ -25,6 +26,7 @@ Each release of `embedded-hal-compat` supports one(ish) pair of e-h releases, be
 [![Build Status](https://github.com/ryankurte/embedded-hal-compat/actions/workflows/rust.yml/badge.svg)](https://github.com/ryankurte/embedded-hal-compat/actions/workflows/rust.yml)
 [![Crates.io](https://img.shields.io/crates/v/embedded-hal-compat.svg)](https://crates.io/crates/embedded-hal-compat)
 [![Docs.rs](https://docs.rs/embedded-hal-compat/badge.svg)](https://docs.rs/embedded-hal-compat)
+![Minimum Supported Rust Version](https://img.shields.io/badge/rustc-1.62+-blue.svg)
 
 Not all wrappers are fully implemented, feel free to open a PR if you come across something missing!
 
