@@ -13,19 +13,19 @@ jobs:
   clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.70.0
+          toolchain: 1.73.0
           targets: x86_64-unknown-linux-gnu
           components: clippy
 
-      - run: cargo clippy --all-targets
+      - run: cargo clippy --all-targets --all-features
 
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: x86_64-unknown-linux-gnu
@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         rust: [stable, 1.62.0]
-        features: ["", "--features alloc"]
+        features: ["", "--all-features"]
         TARGET:
           - x86_64-unknown-linux-gnu
           - x86_64-unknown-linux-musl
@@ -52,7 +52,7 @@ jobs:
           - thumbv7m-none-eabi
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
@@ -65,11 +65,11 @@ jobs:
     strategy:
       matrix:
         rust: [stable]
-        features: ["", "--features alloc"]
+        features: ["", "--all-features"]
         TARGET: [x86_64-unknown-linux-gnu]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
