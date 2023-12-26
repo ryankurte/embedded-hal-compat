@@ -97,7 +97,7 @@ mod delay {
 
     impl<T> eh0_2::blocking::delay::DelayMs<u32> for Reverse<T>
     where
-        T: eh1_0::delay::DelayUs,
+        T: eh1_0::delay::DelayNs,
     {
         fn delay_ms(&mut self, ms: u32) {
             self.inner.delay_us(ms * 1000)
@@ -106,7 +106,7 @@ mod delay {
 
     impl<T> eh0_2::blocking::delay::DelayMs<u16> for Reverse<T>
     where
-        T: eh1_0::delay::DelayUs,
+        T: eh1_0::delay::DelayNs,
     {
         fn delay_ms(&mut self, ms: u16) {
             self.inner.delay_us(ms as u32 * 1000)
@@ -115,7 +115,7 @@ mod delay {
 
     impl<T> eh0_2::blocking::delay::DelayUs<u32> for Reverse<T>
     where
-        T: eh1_0::delay::DelayUs,
+        T: eh1_0::delay::DelayNs,
     {
         fn delay_us(&mut self, us: u32) {
             self.inner.delay_us(us)
@@ -124,7 +124,7 @@ mod delay {
 
     impl<T> eh0_2::blocking::delay::DelayUs<u16> for Reverse<T>
     where
-        T: eh1_0::delay::DelayUs,
+        T: eh1_0::delay::DelayNs,
     {
         fn delay_us(&mut self, us: u16) {
             self.inner.delay_us(us as u32)

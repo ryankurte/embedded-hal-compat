@@ -88,12 +88,12 @@ mod digital {
         E: core::fmt::Debug,
     {
         /// Is the input pin high?
-        fn is_high(&self) -> Result<bool, Self::Error> {
+        fn is_high(&mut self) -> Result<bool, Self::Error> {
             self.inner.is_high().map_err(ForwardError)
         }
 
         /// Is the input pin low?
-        fn is_low(&self) -> Result<bool, Self::Error> {
+        fn is_low(&mut self) -> Result<bool, Self::Error> {
             self.inner.is_low().map_err(ForwardError)
         }
     }
@@ -136,12 +136,12 @@ mod digital {
         E: core::fmt::Debug,
     {
         /// Is the input pin high?
-        fn is_high(&self) -> Result<bool, Self::Error> {
+        fn is_high(&mut self) -> Result<bool, Self::Error> {
             self.inner.is_high().map_err(ForwardError)
         }
 
         /// Is the input pin low?
-        fn is_low(&self) -> Result<bool, Self::Error> {
+        fn is_low(&mut self) -> Result<bool, Self::Error> {
             self.inner.is_low().map_err(ForwardError)
         }
     }
@@ -167,10 +167,14 @@ mod digital {
 mod delay {
     use super::Forward;
 
-    impl<T> eh1_0::delay::DelayUs for Forward<T>
+    impl<T> eh1_0::delay::DelayNs for Forward<T>
     where
         T: eh0_2::blocking::delay::DelayUs<u32>,
     {
+        fn delay_ns(&mut self, ns: u32) {
+            self.inner.delay_us(ns.div_ceil(1000))
+        }
+
         fn delay_us(&mut self, us: u32) {
             self.inner.delay_us(us)
         }
