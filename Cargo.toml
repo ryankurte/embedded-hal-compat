@@ -25,7 +25,7 @@ features = [ "unproven" ]
 
 [dependencies.eh1_0]
 package = "embedded-hal"
-version = "=1.0.0-rc.1"
+version = "1.0.0"
 
 
 [package.metadata.docs.rs]
@@ -33,3 +33,6 @@ version = "=1.0.0-rc.1"
 # RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --all-features --no-deps --open
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
+
+[patch.crates-io]
+embedded-hal = { git = "https://github.com/Dirbaio/embedded-hal", rev = "0e4a3fd08ab919a0b697368305cd3dd926319ed2"}
