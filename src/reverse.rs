@@ -2,8 +2,8 @@
 //! A compatibility layer to alleviate (some) of the issues resolving from changes to embedded-hal
 // Copyright 2021 Ryan Kurte
 
-use core::fmt::Debug;
 use core::cell::RefCell;
+use core::fmt::Debug;
 
 /// Reverse compatibility container object.
 /// This is generic over different E-H types and will provide adaption
@@ -64,8 +64,8 @@ impl<T> Reverse<T> {
 
 // Digital / GPIOs
 mod digital {
-    use core::cell::RefCell;
     use super::{Debug, Reverse};
+    use core::cell::RefCell;
 
     impl<T, E> eh0_2::digital::v2::InputPin for Reverse<RefCell<T>>
     where
