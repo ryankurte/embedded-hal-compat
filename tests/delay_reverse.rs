@@ -2,9 +2,8 @@ use embedded_hal_compat::ReverseCompat;
 
 struct Peripheral;
 
-impl eh1_0::delay::DelayUs for Peripheral {
-    fn delay_us(&mut self, _us: u32) {}
-    fn delay_ms(&mut self, _ms: u32) {}
+impl eh1_0::delay::DelayNs for Peripheral {
+    fn delay_ns(&mut self, _ns: u32) {}
 }
 
 #[test]

@@ -33,6 +33,3 @@ version = "1.0.0"
 # RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --all-features --no-deps --open
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
-
-[patch.crates-io]
-embedded-hal = { git = "https://github.com/Dirbaio/embedded-hal", rev = "0e4a3fd08ab919a0b697368305cd3dd926319ed2"}

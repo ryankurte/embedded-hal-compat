@@ -66,6 +66,8 @@
 //! Calling `ReverseCompat::reverse()` (or `.reverse()`) on `v1.0.x` types creates a wrapper for
 //! use with `v0.2.x` consumers, so you can drop these wrapped types into drivers expecting
 //! `v0.2.x` types.
+//! 
+//! Note that input and output pins require `.reverse_cell()` as a workaround for mutability changes.
 //!
 //!```
 //! # use core::convert::Infallible;
@@ -94,11 +96,43 @@
 //! let _ = eh1_0::digital::OutputPin::set_high(&mut new);
 //!
 //! // Apply backwards compatibility wrapper
-//! let mut old = new.reverse();
+//! let mut old = new.reverse_cell();
 //! // Access via e-h v0.2.x methods
 //! let _ = eh0_2::digital::v2::OutputPin::set_high(&mut old);
 //!```
 //!
+//! ```
+//! # use core::convert::Infallible;
+//! # pub struct InputPin1_0;
+//! #
+//! # impl eh1_0::digital::ErrorType for InputPin1_0 {
+//! #     type Error = Infallible;
+//! # }
+//! #
+//! # impl eh1_0::digital::InputPin for InputPin1_0 {
+//! #     /// Set the output as high
+//! #     fn is_high(&mut self) -> Result<bool, Self::Error> {
+//! #         Ok(true)
+//! #     }
+//! #
+//! #     /// Set the output as low
+//! #     fn is_low(&mut self) -> Result<bool, Self::Error> {
+//! #         Ok(false)
+//! #     }
+//! # }
+//! use embedded_hal_compat::ReverseCompat;
+//!
+//! // Create e-h v1.x.x based type (mock)
+//! let mut new = InputPin1_0;
+//! // Access via e-h v1.x.x methods
+//! let _ = eh1_0::digital::InputPin::is_high(&mut new);
+//!
+//! // Apply backwards compatibility wrapper
+//! let mut old = new.reverse_cell();
+//! // Access via e-h v0.2.x methods
+//! let _ = eh0_2::digital::v2::InputPin::is_high(&mut old);
+//!```
+//! 
 //! ## Optional features
 //! ### `alloc`
 //! The `alloc` feature enables an implementation of the I2C and SPI `Transactional`

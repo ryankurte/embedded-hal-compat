@@ -27,10 +27,10 @@ impl eh1_0::digital::OutputPin for Peripheral {
 }
 
 impl eh1_0::digital::InputPin for Peripheral {
-    fn is_high(&self) -> Result<bool, Self::Error> {
+    fn is_high(&mut self) -> Result<bool, Self::Error> {
         Ok(true)
     }
-    fn is_low(&self) -> Result<bool, Self::Error> {
+    fn is_low(&mut self) -> Result<bool, Self::Error> {
         Ok(false)
     }
 }
@@ -38,7 +38,7 @@ impl eh1_0::digital::InputPin for Peripheral {
 #[test]
 fn can_reverse() {
     let periph_1_0 = Peripheral;
-    let mut periph_0_2 = periph_1_0.reverse();
+    let mut periph_0_2 = periph_1_0.reverse_cell();
     assert!(eh0_2::digital::v2::OutputPin::set_high(&mut periph_0_2).is_ok());
     assert!(eh0_2::digital::v2::InputPin::is_high(&periph_0_2).unwrap());
 }

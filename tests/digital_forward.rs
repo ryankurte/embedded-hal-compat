@@ -77,14 +77,14 @@ fn io_pin_forward() {
     let periph_0_2 = IoPin;
     let mut periph_1_0: Forward<_, ForwardIoPin> = periph_0_2.forward();
     assert!(eh1_0::digital::OutputPin::set_high(&mut periph_1_0).is_ok());
-    assert!(eh1_0::digital::InputPin::is_high(&periph_1_0).unwrap());
+    assert!(eh1_0::digital::InputPin::is_high(&mut periph_1_0).unwrap());
 }
 
 #[test]
 fn input_pin_forward() {
     let periph_0_2 = InputPin;
-    let periph_1_0 = periph_0_2.forward();
-    assert!(eh1_0::digital::InputPin::is_high(&periph_1_0).unwrap());
+    let mut periph_1_0 = periph_0_2.forward();
+    assert!(eh1_0::digital::InputPin::is_high(&mut periph_1_0).unwrap());
 }
 
 #[test]
