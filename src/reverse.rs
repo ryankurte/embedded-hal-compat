@@ -3,6 +3,7 @@
 // Copyright 2021 Ryan Kurte
 
 use core::fmt::Debug;
+use core::cell::RefCell;
 
 /// Reverse compatibility container object.
 /// This is generic over different E-H types and will provide adaption
@@ -11,10 +12,15 @@ pub struct Reverse<T> {
     inner: T,
 }
 
-/// Convert a type into a forward compatibility wrapper object
+/// Convert a type into a reverse compatibility wrapper object
 /// call `.reverse()` on `e-h@1.0.x` types to create an `e-h@0.2.x` compatible wrapper object
 pub trait ReverseCompat<T> {
+    /// Create an e-h-c reverse compatibility wrapper from an existing type
     fn reverse(self) -> Reverse<T>;
+
+    /// Create an e-h-c reverse compatibility wrapper using a ref-cell for interior mutability
+    /// (required for InputPin types)
+    fn reverse_cell(self) -> Reverse<RefCell<T>>;
 }
 
 impl<T> ReverseCompat<T> for T {
@@ -22,6 +28,12 @@ impl<T> ReverseCompat<T> for T {
     /// Available methods depend on the wrapped type
     fn reverse(self) -> Reverse<T> {
         Reverse::new(self)
+    }
+
+    /// Create an e-h-c reverse compatibility wrapper using a ref-cell for interior mutability
+    /// (required for InputPin types)
+    fn reverse_cell(self) -> Reverse<RefCell<T>> {
+        Reverse::new(RefCell::new(self))
     }
 }
 
@@ -52,9 +64,10 @@ impl<T> Reverse<T> {
 
 // Digital / GPIOs
 mod digital {
+    use core::cell::RefCell;
     use super::{Debug, Reverse};
 
-    impl<T, E> eh0_2::digital::v2::InputPin for Reverse<T>
+    impl<T, E> eh0_2::digital::v2::InputPin for Reverse<RefCell<T>>
     where
         T: eh1_0::digital::InputPin<Error = E>,
         E: Debug,
@@ -63,16 +76,16 @@ mod digital {
 
         /// Is the input pin high?
         fn is_high(&self) -> Result<bool, Self::Error> {
-            self.inner.is_high()
+            self.inner.borrow_mut().is_high()
         }
 
         /// Is the input pin low?
         fn is_low(&self) -> Result<bool, Self::Error> {
-            self.inner.is_low()
+            self.inner.borrow_mut().is_low()
         }
     }
 
-    impl<T, E> eh0_2::digital::v2::OutputPin for Reverse<T>
+    impl<T, E> eh0_2::digital::v2::OutputPin for Reverse<RefCell<T>>
     where
         T: eh1_0::digital::OutputPin<Error = E>,
         E: Debug,
@@ -81,12 +94,12 @@ mod digital {
 
         /// Set the output as high
         fn set_high(&mut self) -> Result<(), Self::Error> {
-            self.inner.set_high()
+            self.inner.borrow_mut().set_high()
         }
 
         /// Set the output as low
         fn set_low(&mut self) -> Result<(), Self::Error> {
-            self.inner.set_low()
+            self.inner.borrow_mut().set_low()
         }
     }
 }
