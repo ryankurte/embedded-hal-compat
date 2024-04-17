@@ -66,7 +66,7 @@
 //! Calling `ReverseCompat::reverse()` (or `.reverse()`) on `v1.0.x` types creates a wrapper for
 //! use with `v0.2.x` consumers, so you can drop these wrapped types into drivers expecting
 //! `v0.2.x` types.
-//! 
+//!
 //! Note that input and output pins require `.reverse_cell()` as a workaround for mutability changes.
 //!
 //!```
@@ -132,7 +132,7 @@
 //! // Access via e-h v0.2.x methods
 //! let _ = eh0_2::digital::v2::InputPin::is_high(&mut old);
 //!```
-//! 
+//!
 //! ## Optional features
 //! ### `alloc`
 //! The `alloc` feature enables an implementation of the I2C and SPI `Transactional`
