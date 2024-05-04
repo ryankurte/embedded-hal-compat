@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.13.0] - 2024-05-04
+
+### Added
+- Updated to `embedded-hal` version `1.0.0`.
+
+### Changed
+- Swapped to `RefCell` based `reverse_cell()` for OutputPin backwards compatibility.
+- Update MSRV to 1.73.
+
 ## [0.12.0] - 2023-11-13
 
 ### Added
