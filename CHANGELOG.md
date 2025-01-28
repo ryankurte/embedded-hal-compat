@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Implimented `embedded-hal-async::digital::Wait` trait for all `Forward` variants,
+  which exposes the `wait_for_{rising,falling,any}_edge` and `wait_for_{low,high}` functions
+  on forwarded pins that also impliment `Wait`.
+- Added `embedded-hal-async` v1.0.0 to dependencies.
+- Added `futures` v0.3.31 to dev-dependencies.
+- Added unit test for `Wait` trait forwarding.
+- Updated MSRV to 1.75.
+- Updated Rust edition to 2021.
+
 ## [0.13.0] - 2024-05-04
 
 ### Added

@@ -5,8 +5,9 @@ repository = "https://github.com/ryankurte/embedded-hal-compat"
 keywords = [ "embedded", "embedded-hal", "no-std", "compat", "compatibility" ]
 version = "0.13.0"
 authors = ["Ryan Kurte <ryan@kurte.nz>", "Diego Barrios Romero <eldruin@gmail.com>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
+rust-version = "1.75"
 
 [features]
 alloc = ["embedded-io?/alloc"]
@@ -30,6 +31,9 @@ version = "1.0.0"
 [dependencies.eh1_0_async]
 package = "embedded-hal-async"
 version = "1.0.0"
+
+[dev-dependencies]
+futures = "0.3.31"
 
 [package.metadata.docs.rs]
 # To build locally:
