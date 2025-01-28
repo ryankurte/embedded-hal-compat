@@ -27,6 +27,9 @@ features = [ "unproven" ]
 package = "embedded-hal"
 version = "1.0.0"
 
+[dependencies.eh1_0_async]
+package = "embedded-hal-async"
+version = "1.0.0"
 
 [package.metadata.docs.rs]
 # To build locally:
