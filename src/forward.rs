@@ -98,6 +98,38 @@ mod digital {
         }
     }
 
+    impl<T, E> eh1_0_async::digital::Wait for Forward<T, ForwardInputPin>
+    where
+        T: eh0_2::digital::v2::InputPin<Error = E> + eh1_0_async::digital::Wait<Error = E>,
+        E: core::fmt::Debug,
+    {
+        async fn wait_for_high(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_high().await.map_err(ForwardError)
+        }
+
+        async fn wait_for_low(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_low().await.map_err(ForwardError)
+        }
+
+        async fn wait_for_rising_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner
+                .wait_for_rising_edge()
+                .await
+                .map_err(ForwardError)
+        }
+
+        async fn wait_for_falling_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner
+                .wait_for_falling_edge()
+                .await
+                .map_err(ForwardError)
+        }
+
+        async fn wait_for_any_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_any_edge().await.map_err(ForwardError)
+        }
+    }
+
     impl<T, E> eh1_0::digital::ErrorType for Forward<T, ForwardOutputPin>
     where
         T: eh0_2::digital::v2::OutputPin<Error = E>,
@@ -119,6 +151,38 @@ mod digital {
         /// Set the output as low
         fn set_low(&mut self) -> Result<(), Self::Error> {
             self.inner.set_low().map_err(ForwardError)
+        }
+    }
+
+    impl<T, E> eh1_0_async::digital::Wait for Forward<T, ForwardOutputPin>
+    where
+        T: eh0_2::digital::v2::OutputPin<Error = E> + eh1_0_async::digital::Wait<Error = E>,
+        E: core::fmt::Debug,
+    {
+        async fn wait_for_high(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_high().await.map_err(ForwardError)
+        }
+
+        async fn wait_for_low(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_low().await.map_err(ForwardError)
+        }
+
+        async fn wait_for_rising_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner
+                .wait_for_rising_edge()
+                .await
+                .map_err(ForwardError)
+        }
+
+        async fn wait_for_falling_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner
+                .wait_for_falling_edge()
+                .await
+                .map_err(ForwardError)
+        }
+
+        async fn wait_for_any_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_any_edge().await.map_err(ForwardError)
         }
     }
 
@@ -159,6 +223,40 @@ mod digital {
         /// Set the output as low
         fn set_low(&mut self) -> Result<(), Self::Error> {
             self.inner.set_low().map_err(ForwardError)
+        }
+    }
+
+    impl<T, E> eh1_0_async::digital::Wait for Forward<T, ForwardIoPin>
+    where
+        T: eh0_2::digital::v2::InputPin<Error = E>
+            + eh0_2::digital::v2::OutputPin<Error = E>
+            + eh1_0_async::digital::Wait<Error = E>,
+        E: core::fmt::Debug,
+    {
+        async fn wait_for_high(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_high().await.map_err(ForwardError)
+        }
+
+        async fn wait_for_low(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_low().await.map_err(ForwardError)
+        }
+
+        async fn wait_for_rising_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner
+                .wait_for_rising_edge()
+                .await
+                .map_err(ForwardError)
+        }
+
+        async fn wait_for_falling_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner
+                .wait_for_falling_edge()
+                .await
+                .map_err(ForwardError)
+        }
+
+        async fn wait_for_any_edge(&mut self) -> Result<(), Self::Error> {
+            self.inner.wait_for_any_edge().await.map_err(ForwardError)
         }
     }
 }
