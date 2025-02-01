@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added `embedded-hal-async` v1.0.0 to dependencies.
 - Added `futures` v0.3.31 to dev-dependencies.
 - Added unit test for `Wait` trait forwarding.
+
+### Changed
 - Updated MSRV to 1.75.
 - Updated Rust edition to 2021.
 
