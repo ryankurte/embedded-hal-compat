@@ -358,11 +358,8 @@ mod i2c {
     impl<T, E> eh1_0::i2c::I2c<SevenBitAddress> for Forward<T>
     where
         T: eh0_2_i2c::Write<Error = E>
-            + eh0_2_i2c::WriteIter<Error = E>
             + eh0_2_i2c::Read<Error = E>
             + eh0_2_i2c::WriteRead<Error = E>
-            + eh0_2_i2c::WriteIterRead<Error = E>
-            + eh0_2_i2c::Transactional<Error = E>
             + eh0_2_i2c::TransactionalIter<Error = E>,
         E: core::fmt::Debug,
     {
